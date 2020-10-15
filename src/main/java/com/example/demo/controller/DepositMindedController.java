@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.DepositMindedDomain;
+import com.example.demo.domain.DepositMinded;
 import com.example.demo.service.DepositMindedService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -20,7 +21,11 @@ public class DepositMindedController {
     }
 
     @GetMapping
-    public List<DepositMindedDomain> getDepositMinded(){
-        return depositMindedService.getCurrentDepositMinded;
+    public List<DepositMinded> getDepositMinded(
+            @RequestParam(value = "transferType", required = false) final String transferType,
+            @RequestParam(value= "status", required = false) final String status){
+        return depositMindedService.retrieveDepositMinded(transferType, status);
     }
+
+
 }
