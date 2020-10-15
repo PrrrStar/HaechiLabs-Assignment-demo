@@ -9,10 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Notification Service 의 REST API
+ */
+
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
 
+    private final  NotificationService notificationService;
 
     private final DepositMindedService depositMindedService;
     private final DepositReorgedService depositReorgedService;
@@ -21,11 +26,13 @@ public class NotificationController {
     private final WithdrawPendingService withdrawPendingService;
     private final WithDrawConfirmedService withDrawConfirmedService;
 
-    public NotificationController(final DepositMindedService depositMindedService,
+    public NotificationController(final NotificationService notificationService,
+                                  final DepositMindedService depositMindedService,
                                   final DepositReorgedService depositReorgedService,
                                   final DepositConfirmService depositConfirmService,
                                   final WithdrawPendingService withdrawPendingService,
                                   final WithDrawConfirmedService withDrawConfirmedService){
+        this.notificationService = notificationService;
         this.depositMindedService = depositMindedService;
         this.depositReorgedService = depositReorgedService;
         this.depositConfirmService = depositConfirmService;
@@ -33,6 +40,11 @@ public class NotificationController {
         this.withDrawConfirmedService = withDrawConfirmedService;
     }
 
+    public NotificationController(final NotificationService notificationService){
+        this.notificationService = notificationService;
+    }
+    @GetMapping
+    public Transaction(final NotificationSer)
 
     @GetMapping("/deposit_mined")
     public List<DepositMindedDomain> getDepositMinded(
