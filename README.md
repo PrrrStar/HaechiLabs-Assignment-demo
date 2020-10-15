@@ -138,7 +138,7 @@ JPA 단점
 
 <br><br>
 
-## 참고문헌
+## References
 
     (YouTube) Spring Boot Tutorials (Telusko)
     처음 배우는 스프링부트2 (김영재 저 | 한빛미디어)
