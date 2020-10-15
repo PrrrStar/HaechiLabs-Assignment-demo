@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 
 import com.example.demo.domain.DepositMindedDomain;
+import com.example.demo.domain.Transaction;
 import com.example.demo.repository.DepositMindedRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,4 +17,7 @@ public class DepositMindedService {
         return null;
     }
 
+    public Transaction retrieveStatsForTransaction(String transactionId) {
+        return null;
+    }
 }
