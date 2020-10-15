@@ -1,4 +1,4 @@
 package com.example.demo.service;
 
-public class DepositConfirm {
+public class DepositConfirmService {
 }
