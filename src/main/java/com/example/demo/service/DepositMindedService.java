@@ -12,8 +12,8 @@ public class DepositMindedService {
 
     private DepositMindedRepository depositMindedRepository;
 
-//    public List<DepositMindedDomain> getCurrentDepositMinded() {
-//
-//        return depositMindedRepository;
-//    }
+    public List<DepositMindedDomain> getCurrentDepositMinded() {
+
+        return depositMindedRepository;
+    }
 }

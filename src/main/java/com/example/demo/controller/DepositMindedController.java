@@ -19,8 +19,8 @@ public class DepositMindedController {
         this.depositMindedService = depositMindedService;
     }
 
-//    @GetMapping
-//    public List<DepositMindedDomain> getDepositMinded(){
-//        return depositMindedService.getCurrentDepositMinded;
-//    }
+    @GetMapping
+    public List<DepositMindedDomain> getDepositMinded(){
+        return depositMindedService.getCurrentDepositMinded;
+    }
 }
