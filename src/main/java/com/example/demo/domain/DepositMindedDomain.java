@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class DepositMinded {
+public class DepositMindedDomain {
 
 
     private final Long depositId;
