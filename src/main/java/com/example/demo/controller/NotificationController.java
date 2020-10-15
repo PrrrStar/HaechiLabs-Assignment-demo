@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
  * Notification Service 의 REST API
  */
@@ -17,68 +15,63 @@ import java.util.List;
 @RequestMapping("/notifications")
 public class NotificationController {
 
-    private final  NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    private final DepositMindedService depositMindedService;
-    private final DepositReorgedService depositReorgedService;
-    private final DepositConfirmService depositConfirmService;
+//    private final DepositMindedService depositMindedService;
+//    private final DepositReorgedService depositReorgedService;
+//    private final DepositConfirmService depositConfirmService;
+//
+//    private final WithdrawPendingService withdrawPendingService;
+//    private final WithDrawConfirmedService withDrawConfirmedService;
 
-    private final WithdrawPendingService withdrawPendingService;
-    private final WithDrawConfirmedService withDrawConfirmedService;
-
-    public NotificationController(final NotificationService notificationService,
-                                  final DepositMindedService depositMindedService,
-                                  final DepositReorgedService depositReorgedService,
-                                  final DepositConfirmService depositConfirmService,
-                                  final WithdrawPendingService withdrawPendingService,
-                                  final WithDrawConfirmedService withDrawConfirmedService){
-        this.notificationService = notificationService;
-        this.depositMindedService = depositMindedService;
-        this.depositReorgedService = depositReorgedService;
-        this.depositConfirmService = depositConfirmService;
-        this.withdrawPendingService = withdrawPendingService;
-        this.withDrawConfirmedService = withDrawConfirmedService;
-    }
+//    public NotificationController(final NotificationService notificationService,
+//                                  final DepositMindedService depositMindedService,
+//                                  final DepositReorgedService depositReorgedService,
+//                                  final DepositConfirmService depositConfirmService,
+//                                  final WithdrawPendingService withdrawPendingService,
+//                                  final WithDrawConfirmedService withDrawConfirmedService){
+//        this.notificationService = notificationService;
+//        this.depositMindedService = depositMindedService;
+//        this.depositReorgedService = depositReorgedService;
+//        this.depositConfirmService = depositConfirmService;
+//        this.withdrawPendingService = withdrawPendingService;
+//        this.withDrawConfirmedService = withDrawConfirmedService;
+//    }
 
     public NotificationController(final NotificationService notificationService){
         this.notificationService = notificationService;
     }
-//    @GetMapping
-//    public Transaction(final NotificationService notificationService){
-//        this.notificationService = notificationService;
-//    }
 
     @GetMapping("/deposit_mined")
-    public List<DepositMindedDomain> getDepositMinded(
-            @RequestParam(value = "transferType", required = false) final String transferType,
-            @RequestParam(value= "status", required = false) final String status){
-        return depositMindedService.retrieveDepositMinded(transferType, status);
+    public Transaction getStatsForTransaction(
+            @RequestParam(value = "transactionId") final String transactionId){
+        return notificationService.retrieveStatsForTransaction(transactionId);
     }
-
-    @GetMapping("/deposit_reorged")
-    public List<DepositReorgedService> getDepositReorged(
-            @RequestParam(value = "transferType", required = false) final String transferType,
-            @RequestParam(value= "status", required = false) final String status){
-        return depositReorgedService.retrieveDepositReorged(transferType, status);
-    }
-    @GetMapping("/deposit_confirm")
-    public List<DepositConfirmService> getDepositConfirm(
-            @RequestParam(value = "transferType", required = false) final String transferType,
-            @RequestParam(value= "status", required = false) final String status){
-        return depositConfirmService.retrieveDepositConfirm(transferType, status);
-    }
-    @GetMapping("/withdraw_pending")
-    public List<WithdrawPendingDomain> getWithdrawPending(
-            @RequestParam(value = "transferType", required = false) final String transferType,
-            @RequestParam(value= "status", required = false) final String status){
-        return withdrawPendingService.retrieveWithdrawPending(transferType, status);
-    }
-    @GetMapping("/withdraw_confirmed")
-    public List<WithdrawConfirmedDomain> getWithDrawConfirmed(
-            @RequestParam(value = "transferType", required = false) final String transferType,
-            @RequestParam(value= "status", required = false) final String status){
-        return withDrawConfirmedService.retrieveWithDrawConfirmed(transferType, status);
-    }
+//
+//    @GetMapping("/deposit_reorged")
+//    public List<DepositReorgedService> getDepositReorged(
+//            @RequestParam(value = "transferType", required = false) final String transferType,
+//            @RequestParam(value= "status", required = false) final String status){
+//        return depositReorgedService.retrieveDepositReorged(transferType, status);
+//    }
+//    @GetMapping("/deposit_confirm")
+//    public List<DepositConfirmService> getDepositConfirm(
+//            @RequestParam(value = "transferType", required = false) final String transferType,
+//            @RequestParam(value= "status", required = false) final String status){
+//        return depositConfirmService.retrieveDepositConfirm(transferType, status);
+//    }
+//    @GetMapping("/withdraw_pending")
+//    public List<WithdrawPendingDomain> getWithdrawPending(
+//            @RequestParam(value = "transferType", required = false) final String transferType,
+//            @RequestParam(value= "status", required = false) final String status){
+//        return withdrawPendingService.retrieveWithdrawPending(transferType, status);
+//    }
+//    @GetMapping("/withdraw_confirmed")
+//    public List<WithdrawConfirmedDomain> getWithDrawConfirmed(
+//            @RequestParam(value = "transferType", required = false) final String transferType,
+//            @RequestParam(value= "status", required = false) final String status){
+//        return withDrawConfirmedService.retrieveWithDrawConfirmed(transferType, status);
+//    }
 
 
 }
