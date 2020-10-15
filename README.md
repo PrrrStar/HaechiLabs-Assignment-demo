@@ -14,17 +14,35 @@
   src
   ┗━ main/java           
     ┗━ com.example.demo          
-        ┗━ client                       # 데이터 가공
-            ┗━dto                       # Data Transfer Object    
-        ┗━ configuration                # RestTemplate Build
-        ┗━ controller                   # service 호출 및 Endpoint 경로설정
-        ┗━ domain                       # repository에 대한 추상화 지원
-        ┗━ repository                   # 데이터베이스에 접근
-        ┗━ service                      # 비즈니스 로직 처리
+        ┗━ client                           # 데이터 가공
+            ┗━dto                               # Data Transfer Object    
+                ┗━TransferEventResultDTO            # 입출금 데이터 DTO
+            ┗━ TransferEventClient              # 입출금 데이터 가공 Implement
+            ┗━ TransferEventClientImpl          # 입출금 데이터 가공 구현체
+            ┗━ TransferEventDeserializer        # 입출금 데이터 역직렬화
+        ┗━ configuration                    # RestTemplate Build
+            ┗━RestClientConfiguration           # (Header 도 Bean 으로 작성 예정)
+        ┗━ controller                       # service 호출 및 Endpoint 경로설정
+            ┗━NotificationController            # 알림과 관련된 서비스 호출 및 앤드포인트 경로 설정
+        ┗━ domain                           # repository에 대한 추상화 지원
+            ┗━Transaction                       # 트랜잭션 테이블
+            ┗━TransferType                      # Enum 입출금 타입
+            ┗━TransactionStatus                 # Enum 트랜잭션 타입
+        ┗━ repository                       # 데이터베이스에 접근
+            ┗━ (Undefined)                      # 
+        ┗━ service                          # 비즈니스 로직 처리
+            ┗━NotificationService               # 알림 Implement
+            ┗━NotificationServiceImpl           # 알림과 관련된 Login을 처리할 구현체
   ```
 <br/>
 
-## 과정
+## Timeline
+- 10월 19일 (월)<br>
+
+- 10월 18일 (일)<br>
+
+- 10월 17일 (토)<br>
+
 - 10월 16일 (금)<br>
 
 - 10월 15일 (목)<br> 
@@ -52,7 +70,38 @@ Spring 에 대한 구조와 디자인패턴에 대한 이해를 목표로 공부
 Henesis Wallet의 Transaction Mechanism과 API Architecture를 분석했습니다.<br>
 JAVA 기초문법 복습을 시작했습니다.<br><br>
 
-## 스케치
+## Problem
+짧은 기간 내 Spring Boot Framework 적응의 문제
+- 섣부른 응용 문제<br>
+    급하게 서적과 Youtube 를 통해 배운 Design Pattern 을 적용하려 했으나<br> 
+    배움과 경험 부족으로 인해 실패했습니다.<br>
+    
+- Version에 따른 문제<br>
+    중구난방한 정보수집으로 인해 Version 마다 다른 문법 혼동  
+    Dependency 문제가 진행속도에 악영향<br><br>
+
+## Solution
+- 순차적인 학습 시작
+    Youtube 무료강좌 활용 <br>
+
+- 기본기 다지기
+    문법위주의 공부 (Annotation 활용) <br>
+
+- 학습범위 확장
+    Spring Boot 에 국한되지 않고 Spring Framework 전반적인 <br>
+
+<br><br>
+
+## Impression
+ 새로운 지식을 얻고, 새로운 분야에 도전하는 것은 두렵기도 하지만, 막상 뛰어들면 또 즐겁고 승부욕이 생긴다는 점을 다시한번 느꼈습니다. 아직 스스로 공부해야할 것이 산더미지만 스프링 부트란 프레임 워크만의 매력을 알게되었고, Type Language에 대한 공부의 필요성 또한 느꼈습니다. <br>
+ 아직 적응이 필요한 문법과 구조지만 점차 눈에 익으니까 도전 정신이 더 불타올랐고, 실무에선 어떤 방식으로 설계하며 공부할까 라는 궁금증과 함께 해치랩스에서 조언과 토론을 통한 공부를 하며 꾸준한 트레이닝을 하면 정말 좋을 것 같다는 생각도 들었습니다. <br>
+
+ 기초부터 순차적이고 체계적인 학습을 시도했다면 더 좋은 결과를 냈을 것이라는 아쉬움도 있지만,<br>
+ 이번 기회에 어렴풋 알고 있었던 블록체인에 대해 공부해 볼 수 있었으며, 새로운 프레임워크에 대한 경험과 과거에 배웠던 JAVA 복습도 함께 할 수 있었던, 짧지만 매우 유익한 시간이었습니다. 감사합니다. <br>
+
+<br>
+
+## Sketch
 ```
 JPA 장점
 객체 지향적인 코드 
@@ -87,29 +136,12 @@ JPA 단점
 식별한 연산에 대한 HTTP 메서드 맵핑
 ```
 
-## 문제점
-짧은 기간 내 Spring Boot Framework 적응의 문제
-- 섣부른 응용 문제<br>
-    급하게 서적과 Youtube 를 통해 배운 Design Pattern 을 적용하려 했으나<br> 
-    배움과 경험 부족으로 인해 실패했습니다.<br>
-    
-- Version에 따른 문제<br>
-    중구난방한 정보수집으로 인해 Version 마다 다른 문법 혼동  
-    Dependency 문제가 진행속도에 악영향<br><br>
-
-## 느낀점
- 새로운 지식을 얻고, 새로운 분야에 도전하는 것은 두렵기도 하지만, 막상 뛰어들면 또 즐겁고 승부욕이 생긴다는 점을 다시한번 느꼈습니다. 아직 스스로 공부해야할 것이 산더미지만 스프링 부트란 프레임 워크만의 매력을 알게되었고, Type Language에 대한 공부의 필요성 또한 느꼈습니다. <br>
- 아직 적응이 필요한 문법과 구조지만 점차 눈에 익으니까 도전 정신이 더 불타올랐고, 실무에선 어떤 방식으로 설계하며 공부할까 라는 궁금증과 함께 해치랩스에서 조언과 토론을 통한 공부를 하며 꾸준한 트레이닝을 하면 정말 좋을 것 같다는 생각도 들었습니다. <br>
-
-기초부터 순차적이고 체계적인 학습을 시도했다면 더 좋은 결과를 냈을 것이라는 아쉬움도 있지만,<br>
-이번 기회에 어렴풋 알고 있었던 블록체인에 대해 공부해볼 수 있었으며, 새로운 프레임워크에 대한 경험과 과거에 배웠던 JAVA 복습도 함께 할 수 있었던, 짧지만 매우 유익한 시간이었습니다. 감사합니다. <br>
-
-<br>
+<br><br>
 
 ## 참고문헌
 
     (YouTube) Spring Boot Tutorials (Telusko)
-    처음 배우는 스프링부트2 (김영재 저 | 한빛미디어)<br>
-    배워서 바로 쓰는 스프링 프레임워크 (애시시 사린, 제이 샤르마 저/오현석 역 | 한빛미디어)<br>
-    스프링 부트를 활용한 마이크로서비스 개발 (모이세스 메이세로 저/한동호 역 | 위키북스) <br>
+    처음 배우는 스프링부트2 (김영재 저 | 한빛미디어)
+    배워서 바로 쓰는 스프링 프레임워크 (애시시 사린, 제이 샤르마 저/오현석 역 | 한빛미디어)
+    스프링 부트를 활용한 마이크로서비스 개발 (모이세스 메이세로 저/한동호 역 | 위키북스)
 <br><br>
