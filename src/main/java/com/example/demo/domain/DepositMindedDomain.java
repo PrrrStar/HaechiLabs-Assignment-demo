@@ -10,7 +10,7 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @Entity
 //@Table(name = "depositMinded", schema ="depositMinded")
-public class DepositMinded {
+public class DepositMindedDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
@@ -23,7 +23,7 @@ public class DepositMinded {
     private final String status;
 
 
-    public DepositMinded(){
+    public DepositMindedDomain(){
         this(null, null, null);
     }
 }
