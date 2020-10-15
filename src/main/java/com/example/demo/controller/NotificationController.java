@@ -43,8 +43,10 @@ public class NotificationController {
     public NotificationController(final NotificationService notificationService){
         this.notificationService = notificationService;
     }
-    @GetMapping
-    public Transaction(final NotificationSer)
+//    @GetMapping
+//    public Transaction(final NotificationService notificationService){
+//        this.notificationService = notificationService;
+//    }
 
     @GetMapping("/deposit_mined")
     public List<DepositMindedDomain> getDepositMinded(
