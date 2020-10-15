@@ -1,12 +1,20 @@
 package com.example.demo.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@RequiredArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResultDTO {
-    private List<String> results;
+
+    private String results;
+
+    public ResultDTO(String results){
+        this.results = results;
+    }
 }
