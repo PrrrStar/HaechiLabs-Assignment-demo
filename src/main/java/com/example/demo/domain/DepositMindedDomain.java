@@ -9,7 +9,6 @@ import javax.persistence.*;
 @ToString
 @EqualsAndHashCode
 @Entity
-//@Table(name = "depositMinded", schema ="depositMinded")
 public class DepositMindedDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
