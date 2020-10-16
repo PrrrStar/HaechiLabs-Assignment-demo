@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.client.dto.TransferEventResultDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
-@RequestMapping(value= "/notifications", method= RequestMethod.GET, produces = "application/json;")
+@RequestMapping(value= "/test", method= RequestMethod.GET, produces = "application/json;")
 public class DepositAPIController {
 
 
@@ -36,7 +35,7 @@ public class DepositAPIController {
         }
 
 
-    @RequestMapping(value= "test/deposit")
+    @RequestMapping()
     @ResponseStatus(value = HttpStatus.OK)
     public MultiValueMap<String, Object> DepositAPI() throws JsonProcessingException {
 
@@ -53,7 +52,7 @@ public class DepositAPIController {
 
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, header, Map.class);
 
-        //System.out.println(mapper.readValue(response, TransactionStatus.class));
+
 
 
         ArrayList<Map> lm = (ArrayList<Map>) response.getBody().get("results");

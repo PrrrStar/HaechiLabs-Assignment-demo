@@ -1,10 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.domain.*;
 import com.example.demo.service.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,54 +24,53 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
+    @GetMapping("/test")
+    public TransferEventResultDTO getTest() throws JsonProcessingException {
+        return notificationService.testGetTransactionResult();
+    }
+
     @GetMapping("/deposit_minded")
-    public List<Transaction> getDepositMindedTransaction(
-            @RequestParam(value = "transfer_type") final String transferType,
-            @RequestParam(value = "status") final String status){
-        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    public List<Transaction> getDepositMindedTransaction(){
+        return notificationService.retrieveTransactionByTypeAndStatus();
     }
 
 
     @GetMapping("/deposit_reorged")
-    public List<Transaction> getDepositReorgedTransaction(
-            @RequestParam(value = "transfer_type") final String transferType,
-            @RequestParam(value = "tx_status") final String status){
-        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    public List<Transaction> getDepositReorgedTransaction(){
+        return notificationService.retrieveTransactionByTypeAndStatus();
     }
 
     @GetMapping("/deposit_confirm")
-    public List<Transaction> getDepositConfirmTransaction(
-            @RequestParam(value = "transfer_type") final String transferType,
-            @RequestParam(value = "tx_status") final String status){
-        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    public List<Transaction> getDepositConfirmTransaction(){
+        return notificationService.retrieveTransactionByTypeAndStatus();
     }
 
 
     @GetMapping("/withdraw_pending")
-    public List<Transaction> getWithdrawPendingTransaction(
-            @RequestParam(value = "transfer_type") final String transferType,
-            @RequestParam(value = "tx_status") final String status){
-        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    public List<Transaction> getWithdrawPendingTransaction(){
+        return notificationService.retrieveTransactionByTypeAndStatus();
     }
 
     @GetMapping("/withdraw_confirmed")
-    public List<Transaction> getWithdrawConfirmedTransaction(
-            @RequestParam(value = "transfer_type") final String transferType,
-            @RequestParam(value = "tx_status") final String status){
-        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    public List<Transaction> getWithdrawConfirmedTransaction(){
+        return notificationService.retrieveTransactionByTypeAndStatus();
     }
 
+/*
 
     @GetMapping("/deposit")
-    public List<Transaction> getDepositTransaction(
-            @RequestParam(value = "transfer_type") final String transferType){
-        return notificationService.retrieveTransactionByType(transferType);
+    public List<Transaction> getDepositTransaction(){
+        return notificationService.retrieveTransactionByType();
+    }
+    @GetMapping("/withdraw")
+    public List<Transaction> getWithdrawTransaction(){
+        return notificationService.retrieveTransactionByType();
     }
 
     @GetMapping("/withdraw")
     public List<Transaction> getWithdrawTransaction(
-            @RequestParam(value = "transfer_type") final String transferType){
+            @RequestParam(value = "transferType") final String transferType){
         return notificationService.retrieveTransactionByType(transferType);
     }
-
+*/
 }
