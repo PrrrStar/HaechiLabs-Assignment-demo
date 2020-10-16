@@ -5,6 +5,7 @@ import com.example.demo.domain.*;
 import com.example.demo.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,27 +25,27 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @GetMapping("/deposit_minded")
-    public List<TransferEventResultDTO.Results> getDepositMindedTx() throws JsonProcessingException {
-        return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","MINDED");
+    @PostMapping("/deposit_mined")
+    public List<TransferEventResultDTO.Results> getDepositMinedTx() throws JsonProcessingException {
+        return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","MINED");
     }
 
 
-    @GetMapping("/deposit_reorged")
+    @PostMapping("/deposit_reorged")
     public List<TransferEventResultDTO.Results> getDepositReorgedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","REPLACED");
     }
 
-    @GetMapping("/deposit_confirm")
+    @PostMapping("/deposit_confirm")
     public List<TransferEventResultDTO.Results> getDepositConfirmTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","CONFIRMED");
     }
 
-    @GetMapping("/withdraw_pending")
+    @PostMapping("/withdraw_pending")
     public List<TransferEventResultDTO.Results> getWithdrawPendingTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","PENDING");
     }
-    @GetMapping("/withdraw_confirmed")
+    @PostMapping("/withdraw_confirmed")
     public List<TransferEventResultDTO.Results> getWithdrawConfirmedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","CONFIRMED");
     }
