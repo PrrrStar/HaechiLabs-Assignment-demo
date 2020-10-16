@@ -24,49 +24,46 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @GetMapping("/")
-    public List<TransferEventResultDTO.Results> getTest() throws JsonProcessingException {
-        return notificationService.retrieveAllTransactionResult();
-    }
-
     @GetMapping("/deposit_minded")
-    public List<Transaction> getDepositMindedTransaction(){
-        return notificationService.retrieveTransactionByTypeAndStatus();
+    public List<TransferEventResultDTO.Results> getDepositMindedTx() throws JsonProcessingException {
+        return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","MINDED");
     }
 
 
     @GetMapping("/deposit_reorged")
-    public List<Transaction> getDepositReorgedTransaction(){
-        return notificationService.retrieveTransactionByTypeAndStatus();
+    public List<TransferEventResultDTO.Results> getDepositReorgedTx() throws JsonProcessingException {
+        return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","REPLACED");
     }
 
     @GetMapping("/deposit_confirm")
-    public List<Transaction> getDepositConfirmTransaction(){
-        return notificationService.retrieveTransactionByTypeAndStatus();
+    public List<TransferEventResultDTO.Results> getDepositConfirmTx() throws JsonProcessingException {
+        return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","CONFIRMED");
     }
-
 
     @GetMapping("/withdraw_pending")
-    public List<Transaction> getWithdrawPendingTransaction(){
-        return notificationService.retrieveTransactionByTypeAndStatus();
+    public List<TransferEventResultDTO.Results> getWithdrawPendingTx() throws JsonProcessingException {
+        return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","PENDING");
     }
-
     @GetMapping("/withdraw_confirmed")
-    public List<Transaction> getWithdrawConfirmedTransaction(){
-        return notificationService.retrieveTransactionByTypeAndStatus();
+    public List<TransferEventResultDTO.Results> getWithdrawConfirmedTx() throws JsonProcessingException {
+        return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","CONFIRMED");
     }
 
-/*
+
 
     @GetMapping("/deposit")
-    public List<Transaction> getDepositTransaction(){
-        return notificationService.retrieveTransactionByType();
+    public List<TransferEventResultDTO.Results> getDepositTx() throws JsonProcessingException {
+        return notificationService.retrieveTxByTransferType("DEPOSIT");
     }
 
     @GetMapping("/withdraw")
-    public List<Transaction> getWithdrawTransaction(
-            @RequestParam(value = "transferType") final String transferType){
-        return notificationService.retrieveTransactionByType(transferType);
+    public List<TransferEventResultDTO.Results> getWithdrawTx() throws JsonProcessingException {
+        return notificationService.retrieveTxByTransferType("WITHDRAWAL");
     }
-*/
+
+    @GetMapping("/all")
+    public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
+        return notificationService.retrieveTxALL();
+    }
+
 }
