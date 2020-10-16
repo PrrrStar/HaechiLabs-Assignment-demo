@@ -2,18 +2,13 @@ package com.example.demo.service;
 
 import com.example.demo.client.TransferEventClient;
 import com.example.demo.client.dto.TransferEventResultDTO;
-import com.example.demo.domain.Transaction;
-import com.example.demo.domain.TransactionStatus;
-import com.example.demo.domain.TransferType;
 import com.example.demo.repository.NotificationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
