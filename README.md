@@ -46,7 +46,8 @@
 - 10월 18일 (일)<br>
 
 - 10월 17일 (토)<br>
-WebHook 을 위한 RxJava2 반응형 프로그래밍 공부 시작 :Flowable<br><br>
+WebHook 을 위한 Web socket RxJava2 <br>
+반응형 프로그래밍 공부 시작<br><br>
 DTO의 데이터 바로 조회하는 방식으로 변경 <br>
 Stream 병렬처리 학습 및 적용 <br>
 (DB에 저장 -> 데이터 조회 = 비효율) <br>
