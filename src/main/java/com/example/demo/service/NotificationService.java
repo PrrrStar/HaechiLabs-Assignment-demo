@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.domain.Transaction;
 
+import java.util.List;
+
 public interface NotificationService {
 
 
@@ -11,5 +13,5 @@ public interface NotificationService {
      * @param transactionId
      * @return
      */
-    Transaction retrieveStatsForTransaction(String transactionId);
+    List<Transaction> findByTransferType(String transferType);
 }

@@ -20,22 +20,21 @@ public final class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
-    private final String transactionId;
+    private final String tx_id;
 
-    private final String transactionHash;
-    private final String from;
-    private final String to;
-    private final String masterWalletId;
-    private final String coinSymbol;
+    private final String tx_hash;
+    private final String from_adderss;
+    private final String to_address;
+    private final String wallet_id;
+    private final String ticker;
     private final String amount;
-    private final String orgId;
 
-    private final TransactionStatus status;
-    private final TransferType transferType;
+    private final String status;
+    private final String transferType;
 
     // JSON/JPA 를 위한 빈 생성자
     public Transaction() {
-        this(null, null, null, null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null, null, null);
     }
 
 }
