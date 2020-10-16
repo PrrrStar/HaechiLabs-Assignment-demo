@@ -2,10 +2,11 @@
 
 ## Environment
 
-> Language : JAVA (JDK 14)<br/>
-> Framework : Spring Boot 2.3.4.RELEASED <br/>
-> IDE : IntelliJ Ultimate<br/>
-> OS : Window 10<br/>
+> Language      : JAVA (JDK 14)<br/>
+> Framework     : Spring Boot 2.3.4.RELEASED <br/>
+> ORM Framwwork : JPA, (QueryDSL 도입 준비중)<br/>
+> IDE           : IntelliJ Ultimate<br/>
+> OS            : Window 10<br/>
 
 <br/>
 
@@ -103,6 +104,28 @@ JAVA 기초문법 복습을 시작했습니다.<br><br>
 
 ## Sketch
 ```
+QueryDSL 을 써볼까..?
+컴파일 시점 전에 에러를 발생 시킴
+> IDE의 도움 받아 컴파일 하지 않고 오류 수정 가능
+> 정말 유용함.
+
+ex)
+What is Boolean Builder?
+
+JPAQueryFactory query = new JPAQueryFactory(em);
+QTransaction transaction = QTransaction.transaction;
+query.selectFrom(transaction)
+    .where(transaction.transferType.eq('DEPOSIT'))
+        .and(transaction.status.eq("MINDED")))
+    .orderBy(transaction.tx_id.desc())
+    .fetch();
+
+# 트랜잭션 도메인에서
+# 입출금 타입이 DEPOIST 이고
+# 트랜잭션상태가 MINDED 인 트랜잭션만 조회해서
+# id 순으로 내림차순 정렬한다.
+# 그리고 패치한다.
+
 JPA 장점
 객체 지향적인 코드 
 > 직관적이고 비즈니스 로직에 집중을 도와줌
@@ -112,7 +135,7 @@ JPA 장점
 JPA 단점
 복잡한 로직의 경우 JPA로 처리하기 어렵다. (통계 처리 등)
 데이터 베이스 중심으로 되어 있는 환경에서는 실제 SQL로 튜닝해야하기 때문에 성능 저하
-
+**컴파일 전까지 해당 로직 작동여부 확인 불가능!
 
 이벤트 중심 아키텍쳐 설계 필요
 거래 상태에 따라 발생시킬 이벤트, 비즈니스 로직이 다름.
@@ -139,9 +162,11 @@ JPA 단점
 <br><br>
 
 ## References
-
+    (YouTube) [토크ON세미나] JPA 프로그래밍 기본기 다지기 (김영한/우아한형제들 | SKplanet Tacademy)
     (YouTube) Spring Boot Tutorials (Telusko)
+    
     처음 배우는 스프링부트2 (김영재 저 | 한빛미디어)
     배워서 바로 쓰는 스프링 프레임워크 (애시시 사린, 제이 샤르마 저/오현석 역 | 한빛미디어)
     스프링 부트를 활용한 마이크로서비스 개발 (모이세스 메이세로 저/한동호 역 | 위키북스)
+    
 <br><br>
