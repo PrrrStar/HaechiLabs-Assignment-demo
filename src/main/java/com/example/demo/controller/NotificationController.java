@@ -23,18 +23,54 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @GetMapping("/deposit_mined")
-    public List<Transaction> getStatsForTransaction(
-            @RequestParam(value = "transferType") final String transferType){
-        return notificationService.findByTransferType(transferType);
+    @GetMapping("/deposit_minded")
+    public List<Transaction> getDepositMindedTransaction(
+            @RequestParam(value = "transfer_type") final String transferType,
+            @RequestParam(value = "status") final String status){
+        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
     }
-//
-//    @GetMapping("/deposit_reorged")
 
-//    @GetMapping("/deposit_confirm")
 
-//    @GetMapping("/withdraw_pending")
+    @GetMapping("/deposit_reorged")
+    public List<Transaction> getDepositReorgedTransaction(
+            @RequestParam(value = "transfer_type") final String transferType,
+            @RequestParam(value = "tx_status") final String status){
+        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    }
 
-//    @GetMapping("/withdraw_confirmed")
+    @GetMapping("/deposit_confirm")
+    public List<Transaction> getDepositConfirmTransaction(
+            @RequestParam(value = "transfer_type") final String transferType,
+            @RequestParam(value = "tx_status") final String status){
+        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    }
+
+
+    @GetMapping("/withdraw_pending")
+    public List<Transaction> getWithdrawPendingTransaction(
+            @RequestParam(value = "transfer_type") final String transferType,
+            @RequestParam(value = "tx_status") final String status){
+        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    }
+
+    @GetMapping("/withdraw_confirmed")
+    public List<Transaction> getWithdrawConfirmedTransaction(
+            @RequestParam(value = "transfer_type") final String transferType,
+            @RequestParam(value = "tx_status") final String status){
+        return notificationService.retrieveTransactionByTypeAndStatus(transferType,status);
+    }
+
+
+    @GetMapping("/deposit")
+    public List<Transaction> getDepositTransaction(
+            @RequestParam(value = "transfer_type") final String transferType){
+        return notificationService.retrieveTransactionByType(transferType);
+    }
+
+    @GetMapping("/withdraw")
+    public List<Transaction> getWithdrawTransaction(
+            @RequestParam(value = "transfer_type") final String transferType){
+        return notificationService.retrieveTransactionByType(transferType);
+    }
 
 }
