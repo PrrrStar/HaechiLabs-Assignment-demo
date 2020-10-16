@@ -11,5 +11,9 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Transaction, Long>, QuerydslPredicateExecutor<Transaction> {
+
     List<Transaction> findByTransferType(String transfer_type);
+
+    List<Transaction> findByTransferTypeAndTxStatus(String transferType, String txStatus);
+
 }
