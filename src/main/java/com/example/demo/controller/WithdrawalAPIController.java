@@ -30,7 +30,7 @@ public class WithdrawalAPIController {
         }
 
 
-    @RequestMapping(value= "/withdrawal")
+    @RequestMapping(value= "test/withdrawal")
     @ResponseStatus(value = HttpStatus.OK)
     public MultiValueMap<String, Object> withdrawalAPI() throws JsonProcessingException {
 

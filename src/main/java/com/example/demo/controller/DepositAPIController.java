@@ -36,7 +36,7 @@ public class DepositAPIController {
         }
 
 
-    @RequestMapping(value= "/deposit")
+    @RequestMapping(value= "test/deposit")
     @ResponseStatus(value = HttpStatus.OK)
     public MultiValueMap<String, Object> DepositAPI() throws JsonProcessingException {
 
