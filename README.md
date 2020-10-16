@@ -30,8 +30,6 @@
 
         ┗━ domain                           # repository에 대한 추상화 지원
             ┗━ Transaction                       # 트랜잭션 Entity
-            ┗━ TransferType                      # Enum 입출금 타입 모음
-            ┗━ TransactionStatus                 # Enum 트랜잭션 상태 모음
 
         ┗━ repository                       # ORM 인터페이스
             ┗━ NotificationRepository           # JPA Repository 상속
@@ -54,7 +52,29 @@ Stream 병렬처리 학습 및 적용 <br>
     - 생성한 마스터 월렛의 상태가 입금 및 MINED 일 떄, 해당 거래내역을 조회합니다. <br>
     http://localhost:8080/notifications/deposit_mined
         ```
-        []
+        [
+            {
+                "id": 42819,
+                "from": "0x4d41332e31a57d14899a3890b665710076a298d4",
+                "to": "0xe5b758b9891d665e81c678c33eeec3ff33fa85e5",
+                "amount": "0x2386f26fc10000",
+                "blockchain": "ETHEREUM",
+                "status": "MINED",
+                "confirmation": "0x1",
+                "walletId": "1537cb4c79ed13761ab58d22c37ca0a4",
+                "orgId": "39cfcd04ab40f24308255eba661d45c7",
+                "masterWalletId": "f8c677322bd3fbb8bc1bbb20641cbc42",
+                "transactionId": "1d4c9086791379097034aa53a192712c",
+                "coinSymbol": "ETH",
+                "blockHash": "0x66c6802713879992b88a460b6e022ead38c75d6269047a4f5bf8f53becae8b5e",
+                "transferType": "DEPOSIT",
+                "transactionHash": "0x2842fe0b8521763fa617c006c789e321398b314ba49a1087b699e4a498e0297c",
+                "createdAt": "1602888673541",
+                "updatedAt": "1602888673541",
+                "walletName": "PrrrStar2-user0",
+                "walletType": "USER_WALLET"
+            }
+        ]
         ``` 
     - 생성한 마스터 월렛의 상태가 입금 및 REPLACED 일 떄, 해당 거래내역을 조회합니다. <br>
     http://localhost:8080/notifications/deposit_reorged
@@ -69,7 +89,29 @@ Stream 병렬처리 학습 및 적용 <br>
     - 생성한 마스터 월렛의 상태가 입금 및 PENDING 일 떄, 해당 거래내역을 조회합니다. <br>
     http://localhost:8080/notifications/withdraw_pending
         ```
-        []
+        [
+            {
+                "id": 42820,
+                "from": "0x4d41332e31a57d14899a3890b665710076a298d4",
+                "to": "0x552fec7ab6e3336b976eeb408c3b2d15e96de06f",
+                "amount": "0x6a94d74f430000",
+                "blockchain": "ETHEREUM",
+                "status": "PENDING",
+                "confirmation": "0x0",
+                "walletId": "346f6920f8059fe5e7614f6c46bd5cbb",
+                "orgId": "39cfcd04ab40f24308255eba661d45c7",
+                "masterWalletId": "346f6920f8059fe5e7614f6c46bd5cbb",
+                "transactionId": "ec3154a3e2715118e85cdb2944df804d",
+                "coinSymbol": "ETH",
+                "blockHash": null,
+                "transferType": "WITHDRAWAL",
+                "transactionHash": "0x9f1f76aab7e634a813f60b9366851781ac56dbaf871225cf96f558e5239a256d",
+                "createdAt": "1602888832514",
+                "updatedAt": "1602888834579",
+                "walletName": "PrrrStar",
+                "walletType": "MASTER_WALLET"
+            }
+        ]
         ``` 
     - 생성한 마스터 월렛의 상태가 출금 및 CONFIRMED 일 떄, 해당 거래내역을 조회합니다. <br>
     http://localhost:8080/notifications/withdraw_confirmed
