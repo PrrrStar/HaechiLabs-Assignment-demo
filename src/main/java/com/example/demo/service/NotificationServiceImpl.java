@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
+import com.example.demo.client.TransferEventClient;
 import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.domain.Transaction;
 import com.example.demo.repository.NotificationRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,23 +15,36 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService{
 
     private NotificationRepository notificationRepository;
-    private TransferEventResultDTO transferEventResultDTO;
+    private TransferEventClient transferEventClient;
 
     NotificationServiceImpl(NotificationRepository notificationRepository,
-                            TransferEventResultDTO transferEventResultDTO){
+                            TransferEventClient transferEventClient){
         this.notificationRepository = notificationRepository;
-        this.transferEventResultDTO = transferEventResultDTO;
+        this.transferEventClient = transferEventClient;
     }
 
 
+    String transferType;
+    String txStatus;
+
     /**
      * 입출금 타입과 트랜잭션 상태로 찾기
-     * @param transferType
-     * @param txStatus
      * @return
      */
     @Override
-    public List<Transaction> retrieveTransactionByTypeAndStatus(String transferType, String txStatus) {
+    public List<TransferEventResultDTO.Results> retrieveAllTransactionResult() throws JsonProcessingException {
+        TransferEventResultDTO.Results results = new TransferEventResultDTO.Results();
+
+        List<TransferEventResultDTO.Results> response = transferEventClient.retrieveTransferEventResultDTO().getResults();
+
+        System.out.println(response);
+        return response;
+    }
+
+
+    @Override
+    public List<Transaction> retrieveTransactionByTypeAndStatus() {
+
         if (transferType == "DEPOSIT"){
             if(txStatus == "MINDED"){
                 log.info("입출금 타입 {}\n트랜잭션 상태 {}",transferType,txStatus);
@@ -55,6 +70,8 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
 
+
+
     /**
      * 입출금 타입으로 찾기
      * @param transferType
@@ -71,6 +88,7 @@ public class NotificationServiceImpl implements NotificationService{
         }
 
     }
+
 
 
 

@@ -24,9 +24,9 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @GetMapping("/test")
-    public TransferEventResultDTO getTest() throws JsonProcessingException {
-        return notificationService.testGetTransactionResult();
+    @GetMapping("/")
+    public List<TransferEventResultDTO.Results> getTest() throws JsonProcessingException {
+        return notificationService.retrieveAllTransactionResult();
     }
 
     @GetMapping("/deposit_minded")
@@ -60,10 +60,6 @@ public class NotificationController {
 
     @GetMapping("/deposit")
     public List<Transaction> getDepositTransaction(){
-        return notificationService.retrieveTransactionByType();
-    }
-    @GetMapping("/withdraw")
-    public List<Transaction> getWithdrawTransaction(){
         return notificationService.retrieveTransactionByType();
     }
 
