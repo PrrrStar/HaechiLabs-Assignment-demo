@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.domain.Transaction;
 import com.example.demo.repository.NotificationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +13,15 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService{
 
     private NotificationRepository notificationRepository;
+    private TransferEventResultDTO transferEventResultDTO;
 
-    NotificationServiceImpl(NotificationRepository notificationRepository){
+    NotificationServiceImpl(NotificationRepository notificationRepository,
+                            TransferEventResultDTO transferEventResultDTO){
         this.notificationRepository = notificationRepository;
+        this.transferEventResultDTO = transferEventResultDTO;
     }
+
+
     /**
      * 입출금 타입과 트랜잭션 상태로 찾기
      * @param transferType
