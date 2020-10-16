@@ -1,12 +1,13 @@
 package com.example.demo.client;
 
 import com.example.demo.client.dto.TransferEventResultDTO;
-import org.springframework.http.ResponseEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * 코인 입출금 내역과 연결하는 인터페이스
  */
 public interface TransferEventClient {
 
-    ResponseEntity<TransferEventResultDTO> retrieveTransferEventResultDTOById(final Long transferEventId);
+    TransferEventResultDTO retrieveTransferEventResultDTO() throws JsonProcessingException;
+
 }

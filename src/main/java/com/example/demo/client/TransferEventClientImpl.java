@@ -1,12 +1,16 @@
 package com.example.demo.client;
 
-
 import com.example.demo.client.dto.TransferEventResultDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.util.List;
 
 /**
  * 코인 입출금 내역과 REST로 연결하기 위한
@@ -16,18 +20,15 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class TransferEventClientImpl implements TransferEventClient{
 
+
     private final RestTemplate restTemplate;
-    private final String henesisWalletHost;
     private final String xHenesisSecret;
     private final String authorization;
-
     @Autowired
     public TransferEventClientImpl(final RestTemplate restTemplate,
-                                   @Value("${henesisWalletHost}") final String henesisWalletHost,
-                                   @Value("${xHenesisSecret}") final String xHenesisSecret,
-                                   @Value("${authorization}") final String authorization){
+                      @Value("${xHenesisSecret}") final String xHenesisSecret,
+                      @Value("${authorization}") final String authorization){
         this.restTemplate = restTemplate;
-        this.henesisWalletHost = henesisWalletHost;
         this.xHenesisSecret = xHenesisSecret;
         this.authorization = authorization;
     }
@@ -41,14 +42,17 @@ public class TransferEventClientImpl implements TransferEventClient{
         return headers;
     }
 
-
-    @Override
-    public ResponseEntity<TransferEventResultDTO> retrieveTransferEventResultDTOById(Long transferEventId) {
-        String url = henesisWalletHost+"/value-transfer-events";
+    public TransferEventResultDTO retrieveTransferEventResultDTO() throws JsonProcessingException {
+        String url = "http://localhost:3000/api/v2/eth/value-transfer-events";
         HttpHeaders headers = createHttpHeaders();
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<TransferEventResultDTO> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, TransferEventResultDTO.class);
+        HttpEntity<String> header = new HttpEntity<>(headers);
 
-        return responseEntity;
+        ResponseEntity<String> response = restTemplate.exchange(URI.create(url), HttpMethod.GET, header, String.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        TransferEventResultDTO transferEventResultDTO = objectMapper.readValue(response.getBody(), TransferEventResultDTO.class);
+
+
+        return transferEventResultDTO;
     }
 }
