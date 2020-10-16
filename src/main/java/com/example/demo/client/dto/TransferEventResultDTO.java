@@ -14,60 +14,61 @@ import java.util.List;
 @Data
 public class TransferEventResultDTO {
 
-    @JsonProperty("results")
-    private List<TransferEventResultDTO.Results> results;
+
     @JsonProperty("pagination")
     private TransferEventResultDTO.Pagination pagination;
+    @JsonProperty("results")
+    private List<TransferEventResultDTO.Results> results;
 
     @Data
     public static class Results {
-        @JsonProperty("walletType")
-        private String wallettype;
-        @JsonProperty("walletName")
-        private String walletname;
-        @JsonProperty("updatedAt")
-        private String updatedat;
-        @JsonProperty("createdAt")
-        private String createdat;
-        @JsonProperty("transactionHash")
-        private String transactionhash;
-        @JsonProperty("blockHash")
-        private String blockhash;
-        @JsonProperty("transferType")
-        private String transfertype;
-        @JsonProperty("coinSymbol")
-        private String coinsymbol;
-        @JsonProperty("transactionId")
-        private String transactionid;
-        @JsonProperty("masterWalletId")
-        private String masterwalletid;
-        @JsonProperty("orgId")
-        private String orgid;
-        @JsonProperty("walletId")
-        private String walletid;
-        @JsonProperty("confirmation")
-        private String confirmation;
-        @JsonProperty("status")
-        private String status;
-        @JsonProperty("blockchain")
-        private String blockchain;
-        @JsonProperty("amount")
-        private String amount;
-        @JsonProperty("to")
-        private String to;
-        @JsonProperty("from")
-        private String from;
         @JsonProperty("id")
         private int id;
+        @JsonProperty("from")
+        private String from;
+        @JsonProperty("to")
+        private String to;
+        @JsonProperty("amount")
+        private String amount;
+        @JsonProperty("blockchain")
+        private String blockchain;
+        @JsonProperty("status")
+        private String status;
+        @JsonProperty("confirmation")
+        private String confirmation;
+        @JsonProperty("walletId")
+        private String walletId;
+        @JsonProperty("orgId")
+        private String orgid;
+        @JsonProperty("masterWalletId")
+        private String masterWalletId;
+        @JsonProperty("transactionId")
+        private String transactionId;
+        @JsonProperty("coinSymbol")
+        private String coinSymbol;
+        @JsonProperty("blockHash")
+        private String blockHash;
+        @JsonProperty("transferType")
+        private String transferType;
+        @JsonProperty("transactionHash")
+        private String transactionHash;
+        @JsonProperty("createdAt")
+        private String createdAt;
+        @JsonProperty("updatedAt")
+        private String updatedAt;
+        @JsonProperty("walletName")
+        private String walletName;
+        @JsonProperty("walletType")
+        private String walletType;
     }
 
     @Data
     public static class Pagination {
-        @JsonProperty("totalCount")
-        private int totalcount;
+        @JsonProperty("nextUrl")
+        private String nextUrl;
         @JsonProperty("previousUrl")
         private String previousUrl;
-        @JsonProperty("nextUrl")
-        private String nexturl;
+        @JsonProperty("totalCount")
+        private int totalCount;
     }
 }
