@@ -6,12 +6,19 @@ import java.util.List;
 
 public interface NotificationService {
 
+    /**
+     * 입출금 타입을 가진 트랜잭션 조회
+     * @param transferType
+     * @return
+     */
+    List<Transaction> retrieveTransactionByType(String transferType);
 
 
     /**
-     * 해당 트랜잭션의 통계 조회
-     * @param transactionId
+     * 입출금 타입, 상태를 가진 트랜잭션 조회
+     * @param transferType
+     * @param txStatus
      * @return
      */
-    List<Transaction> findByTransferType(String transferType);
+    List<Transaction> retrieveTransactionByTypeAndStatus(String transferType, String txStatus);
 }
