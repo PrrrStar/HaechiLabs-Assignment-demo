@@ -51,7 +51,6 @@ public class TransferEventClientImpl implements TransferEventClient{
         ObjectMapper objectMapper = new ObjectMapper();
 
         TransferEventResultDTO transferEventResultDTO = objectMapper.readValue(response.getBody(), TransferEventResultDTO.class);
-        System.out.print(transferEventResultDTO.getResults());
 
         return transferEventResultDTO;
     }
