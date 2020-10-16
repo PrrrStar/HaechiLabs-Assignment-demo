@@ -38,4 +38,7 @@ public final class Transaction {
         this(null, null, null, null, null, null, null, null, null);
     }
 
+    public Transaction(final String transferType, final String txStatus) {
+        this(null, null, txStatus, transferType, null, null, null, null, null);
+    }
 }
