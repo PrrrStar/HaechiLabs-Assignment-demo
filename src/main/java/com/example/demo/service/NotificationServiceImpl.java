@@ -3,12 +3,17 @@ package com.example.demo.service;
 import com.example.demo.client.TransferEventClient;
 import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.domain.Transaction;
+import com.example.demo.domain.TransactionStatus;
+import com.example.demo.domain.TransferType;
 import com.example.demo.repository.NotificationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -23,73 +28,55 @@ public class NotificationServiceImpl implements NotificationService{
         this.transferEventClient = transferEventClient;
     }
 
-
-    String transferType;
-    String txStatus;
-
     /**
-     * 입출금 타입과 트랜잭션 상태로 찾기
+     * 입출금 타입과 트랜잭션 상태로 필터링
+     * @param transferType
+     * @param status
      * @return
+     * @throws JsonProcessingException
      */
     @Override
-    public List<TransferEventResultDTO.Results> retrieveAllTransactionResult() throws JsonProcessingException {
-        TransferEventResultDTO.Results results = new TransferEventResultDTO.Results();
+    public List<TransferEventResultDTO.Results> retrieveTxByTransferTypeAndStatus(String transferType, String status)
+            throws JsonProcessingException {
 
-        List<TransferEventResultDTO.Results> response = transferEventClient.retrieveTransferEventResultDTO().getResults();
+        List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
+        List<TransferEventResultDTO.Results> transactions = results.stream()
+                .filter(t -> t.getTransferType().contains(transferType))
+                .filter(s -> s.getStatus().contains(status))
+                .collect(Collectors.toList());
 
-        System.out.println(response);
-        return response;
+        return transactions;
     }
-
-
-    @Override
-    public List<Transaction> retrieveTransactionByTypeAndStatus() {
-
-        if (transferType == "DEPOSIT"){
-            if(txStatus == "MINDED"){
-                log.info("입출금 타입 {}\n트랜잭션 상태 {}",transferType,txStatus);
-                return notificationRepository.findByTransferTypeAndTxStatus("DEPOSIT","MINDED");
-            }else if(txStatus == "REPLACED"){
-                return notificationRepository.findByTransferTypeAndTxStatus("DEPOSIT","REPLACED");
-            }else if(txStatus == "CONFIRMED") {
-                return notificationRepository.findByTransferTypeAndTxStatus("DEPOSIT","CONFIRMED");
-            }else {
-                return null;
-            }
-        }else if(transferType == "WITHDRAWAL"){
-            if(txStatus == "PENDING"){
-                return notificationRepository.findByTransferTypeAndTxStatus("WITHDRAWAL","PENDING");
-            }else if(txStatus == "CONFIRMED") {
-                return notificationRepository.findByTransferTypeAndTxStatus("WITHDRAWAL","CONFIRMED");
-            }else {
-                return null;
-            }
-        }else{
-            return null;
-        }
-    }
-
-
 
 
     /**
-     * 입출금 타입으로 찾기
+     * 입출금 타입으로 필터링
      * @param transferType
      * @return
      */
     @Override
-    public List<Transaction> retrieveTransactionByType(String transferType) {
-        if (transferType == "DEPOSIT"){
-            return notificationRepository.findByTransferType("DEPOSIT");
-        }else if(transferType == "WITHDRAWAL"){
-            return notificationRepository.findByTransferType("WITHDRAWAL");
-        }else{
-            return null;
-        }
+    public List<TransferEventResultDTO.Results> retrieveTxByTransferType(String transferType)
+            throws JsonProcessingException {
 
+        List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
+        List<TransferEventResultDTO.Results> transactions = results.stream()
+                .filter(t -> t.getTransferType().contains(transferType))
+                .collect(Collectors.toList());
+
+        return transactions;
     }
 
+    /**
+     * 전체 트랜잭션 조회
+     * @return
+     */
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveTxALL()
+            throws JsonProcessingException {
 
+        List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
 
+        return results;
+    }
 
 }
