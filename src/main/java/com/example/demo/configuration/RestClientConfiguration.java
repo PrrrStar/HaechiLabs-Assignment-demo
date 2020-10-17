@@ -1,18 +1,42 @@
 package com.example.demo.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestClientConfiguration {
 
+    private final String xHenesisSecret;
+    private final String authorization;
+
+    public RestClientConfiguration(@Value("${xHenesisSecret}") final String xHenesisSecret,
+                                   @Value("${authorization}") final String authorization) {
+        this.xHenesisSecret = xHenesisSecret;
+        this.authorization = authorization;
+    }
+
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder){
+    public HttpEntity<String> createHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("X-Henesis-Secret", xHenesisSecret);
+        headers.add("Authorization", authorization);
+        HttpEntity<String> httpHeader = new HttpEntity<>(headers);
+
+        return httpHeader;
+
+    }
+
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
 
         return builder.build();
     }
-
 
 }
