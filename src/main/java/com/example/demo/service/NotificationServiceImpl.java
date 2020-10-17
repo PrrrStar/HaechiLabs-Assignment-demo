@@ -5,6 +5,7 @@ import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.repository.NotificationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,11 +67,12 @@ public class NotificationServiceImpl implements NotificationService{
      * @return
      */
     @Override
+    @Scheduled(fixedDelay = 1000)
     public List<TransferEventResultDTO.Results> retrieveTxALL()
             throws JsonProcessingException {
 
         List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
-
+        System.out.println(results);
         return results;
     }
 

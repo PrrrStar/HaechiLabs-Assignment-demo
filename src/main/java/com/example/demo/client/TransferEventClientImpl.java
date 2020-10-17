@@ -31,8 +31,6 @@ public class TransferEventClientImpl implements TransferEventClient{
         this.createHttpHeaders = createHttpHeaders;
     }
 
-
-    @Scheduled(fixedDelay = 1000)
     public TransferEventResultDTO retrieveTransferEventResultDTO() throws JsonProcessingException {
         String url = "http://localhost:3000/api/v2/eth/value-transfer-events";
 
