@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +40,7 @@ public class NotificationServiceImpl implements NotificationService{
      * @return
      * @throws JsonProcessingException
      */
+
     @Override
     public List<TransferEventResultDTO.Results> retrieveTxByTransferTypeAndStatus(String transferType, String status)
             throws JsonProcessingException {
@@ -49,10 +52,18 @@ public class NotificationServiceImpl implements NotificationService{
                 .collect(Collectors.toList());
 
         ObjectMapper mapper = new ObjectMapper();
-        List<TransferResultEvent> a = mapper.readValue(transactions.get(0).getClass(),TransferResultEvent.class);
+        //List<TransferResultEvent> a = mapper.readValue(transactions.get(0).getClass(),TransferResultEvent.class);
 
+        /*
+         * 1초마다 Scheduler 로 컨트롤러에서 이 메서드를 호출하는건 굉장한 낭비다.
+         * return 하기 전에 event 메세지를 보내는 건?
+         */
+        System.out.println(transferType+" | "+status);
+        System.out.println(transactions);
+        System.out.println("");
         return transactions;
     }
+
 //
 //            if (transferType=="DEPOSIT"&&status=="MINED") {
 //        transactions.addAll()
@@ -90,7 +101,6 @@ public class NotificationServiceImpl implements NotificationService{
      * 전체 트랜잭션 조회
      * @return
      */
-
     @Override
     public List<TransferEventResultDTO.Results> retrieveTxALL()
             throws JsonProcessingException {

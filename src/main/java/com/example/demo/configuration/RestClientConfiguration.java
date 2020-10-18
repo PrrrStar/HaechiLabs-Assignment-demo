@@ -21,6 +21,11 @@ public class RestClientConfiguration {
         this.authorization = authorization;
     }
 
+
+    /**
+     * properties 에서 secret, authoriztion 값을 가져와 header에 추가해줍니다.
+     * @return HttpEntity<String> 으로 반환합니다.
+     */
     @Bean
     public HttpEntity<String> createHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -33,6 +38,11 @@ public class RestClientConfiguration {
 
     }
 
+    /**
+     * restTemplate 을 빌드합니다.
+     * @param builder
+     * @return builder.build()
+     */
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
 

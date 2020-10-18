@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,6 +33,11 @@ public class TransferEventClientImpl implements TransferEventClient{
         this.valueTransferEventsHost = valueTransferEventsHost;
     }
 
+    /**
+     * DTO 와 ResponseEntity 를 매핑한 결과를 DTO 객체 타입으로 반환합니다.
+     * @return TransferEventResultDTO transferEventResultDTO (DTO Object Type)
+     * @throws JsonProcessingException
+     */
     public TransferEventResultDTO retrieveTransferEventResultDTO() throws JsonProcessingException {
         String url = "http://localhost:3000/api/v2/eth/value-transfer-events";
 
@@ -43,7 +49,11 @@ public class TransferEventClientImpl implements TransferEventClient{
         return transferEventResultDTO;
     }
 
-    public ResponseEntity<String> retrieveTransferResults() throws JsonProcessingException {
+    /**
+     * 서버에서 호출한 결과를 ResponseEntity<String> 타입으로 반환합니다.
+     * @return ResponseEntity<String> response (ResponseEntity Type)
+     */
+    public ResponseEntity<String> retrieveTransferResults() {
 
         ResponseEntity<String> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, String.class);
 

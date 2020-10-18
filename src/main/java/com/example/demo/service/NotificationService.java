@@ -21,14 +21,12 @@ public interface NotificationService {
     /**
      * 입출금 타입으로 트랜잭션 조회
      * @param transferType
-     * @return
      */
     List<TransferEventResultDTO.Results> retrieveTxByTransferType(String transferType) throws JsonProcessingException;
 
 
     /**
      * 모든 트랜잭션 조회
-     * @return
      */
     List<TransferEventResultDTO.Results> retrieveTxALL() throws JsonProcessingException;
 
