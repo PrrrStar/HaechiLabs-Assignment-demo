@@ -1,13 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.client.dto.TransferEventResultDTO;
-import com.example.demo.domain.*;
 import com.example.demo.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
