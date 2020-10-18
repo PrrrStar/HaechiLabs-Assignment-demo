@@ -26,34 +26,34 @@ public class NotificationController {
     }
 
 
-    @Scheduled(fixedDelay = 1000)
+
     @GetMapping("/")
     public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
         return notificationService.retrieveTxALL();
     }
 
-
-    @GetMapping("/deposit_mined")
+    @Scheduled(fixedDelay = 100)
+    @PostMapping("/deposit_mined")
     public List<TransferEventResultDTO.Results> getDepositMinedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","MINED");
     }
 
-
+    @Scheduled(fixedDelay = 100)
     @PostMapping("/deposit_reorged")
     public List<TransferEventResultDTO.Results> getDepositReorgedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","REPLACED");
     }
-
+    @Scheduled(fixedDelay = 100)
     @PostMapping("/deposit_confirm")
     public List<TransferEventResultDTO.Results> getDepositConfirmTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","CONFIRMED");
     }
-
-    @GetMapping("/withdraw_pending")
+    @Scheduled(fixedDelay = 100)
+    @PostMapping("/withdraw_pending")
     public List<TransferEventResultDTO.Results> getWithdrawPendingTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","PENDING");
     }
-
+    @Scheduled(fixedDelay = 100)
     @PostMapping("/withdraw_confirmed")
     public List<TransferEventResultDTO.Results> getWithdrawConfirmedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","CONFIRMED");
