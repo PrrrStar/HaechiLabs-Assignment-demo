@@ -4,6 +4,11 @@ import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.domain.*;
 import com.example.demo.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +25,20 @@ import java.util.List;
 public class NotificationController {
 
     private final NotificationService notificationService;
-
     public NotificationController(final NotificationService notificationService){
         this.notificationService = notificationService;
+
     }
 
-    @PostMapping("/deposit_mined")
+
+    @Scheduled(fixedDelay = 1000)
+    @GetMapping("/")
+    public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
+        return notificationService.retrieveTxALL();
+    }
+
+
+    @GetMapping("/deposit_mined")
     public List<TransferEventResultDTO.Results> getDepositMinedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","MINED");
     }
@@ -41,10 +54,11 @@ public class NotificationController {
         return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","CONFIRMED");
     }
 
-    @PostMapping("/withdraw_pending")
+    @GetMapping("/withdraw_pending")
     public List<TransferEventResultDTO.Results> getWithdrawPendingTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","PENDING");
     }
+
     @PostMapping("/withdraw_confirmed")
     public List<TransferEventResultDTO.Results> getWithdrawConfirmedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","CONFIRMED");
@@ -62,9 +76,5 @@ public class NotificationController {
         return notificationService.retrieveTxByTransferType("WITHDRAWAL");
     }
 
-    @GetMapping("/all")
-    public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
-        return notificationService.retrieveTxALL();
-    }
 
 }
