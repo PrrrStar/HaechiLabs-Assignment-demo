@@ -2,10 +2,13 @@ package com.example.demo.service;
 
 import com.example.demo.client.TransferEventClient;
 import com.example.demo.client.dto.TransferEventResultDTO;
+import com.example.demo.event.EventDispatcher;
+import com.example.demo.event.TransferResultEvent;
 import com.example.demo.repository.NotificationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,12 +20,16 @@ public class NotificationServiceImpl implements NotificationService{
 
     private NotificationRepository notificationRepository;
     private TransferEventClient transferEventClient;
+    private EventDispatcher eventDispatcher;
 
     NotificationServiceImpl(NotificationRepository notificationRepository,
-                            TransferEventClient transferEventClient){
+                            TransferEventClient transferEventClient,
+                            EventDispatcher eventDispatcher){
         this.notificationRepository = notificationRepository;
         this.transferEventClient = transferEventClient;
+        this.eventDispatcher = eventDispatcher;
     }
+
 
     /**
      * 입출금 타입과 트랜잭션 상태로 필터링
@@ -41,9 +48,27 @@ public class NotificationServiceImpl implements NotificationService{
                 .filter(s -> s.getStatus().contains(status))
                 .collect(Collectors.toList());
 
+        ObjectMapper mapper = new ObjectMapper();
+        List<TransferResultEvent> a = mapper.readValue(transactions.get(0).getClass(),TransferResultEvent.class);
+
         return transactions;
     }
-
+//
+//            if (transferType=="DEPOSIT"&&status=="MINED") {
+//        transactions.addAll()
+//    }
+//        if (transferType=="DEPOSIT"&&status=="REPLACED") {
+//
+//    }
+//        if (transferType=="DEPOSIT"&&status=="CONFIRMED") {
+//
+//    }
+//        if (transferType=="WITHDRAWAL"&&status=="PENDING") {
+//
+//    }
+//        if (transferType=="WITHDRAWAL"&&status=="CONFIRMED") {
+//
+//    }
 
     /**
      * 입출금 타입으로 필터링
@@ -58,7 +83,6 @@ public class NotificationServiceImpl implements NotificationService{
         List<TransferEventResultDTO.Results> transactions = results.stream()
                 .filter(t -> t.getTransferType().contains(transferType))
                 .collect(Collectors.toList());
-
         return transactions;
     }
 
@@ -66,13 +90,13 @@ public class NotificationServiceImpl implements NotificationService{
      * 전체 트랜잭션 조회
      * @return
      */
+
     @Override
-    @Scheduled(fixedDelay = 1000)
     public List<TransferEventResultDTO.Results> retrieveTxALL()
             throws JsonProcessingException {
-
         List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
-        System.out.println(results);
+
+
         return results;
     }
 

@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.client.dto.TransferEventResultDTO;
-import com.example.demo.domain.Transaction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
