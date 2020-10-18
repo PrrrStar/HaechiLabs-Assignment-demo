@@ -4,7 +4,7 @@
 
 > Language      : JAVA (JDK 14)<br/>
 > Framework     : Spring Boot 2.3.4.RELEASED <br/>
-> BuildTool     : Maven
+> BuildTool     : Maven<br/>
 > ORM           : JpaRepository, (QueryDSL 도입 준비중)<br/>
 > IDE           : IntelliJ<br/>
 > OS            : Window 10<br/>
