@@ -10,10 +10,6 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 @SpringBootApplication
 public class DemoApplication {
 
-    @Bean
-    public ServerEndpointExporter serverEndpointExporter(){
-        return new ServerEndpointExporter();
-    }
 
 
     public static void main(String[] args) {
