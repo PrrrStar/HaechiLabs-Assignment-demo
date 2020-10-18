@@ -4,8 +4,9 @@
 
 > Language      : JAVA (JDK 14)<br/>
 > Framework     : Spring Boot 2.3.4.RELEASED <br/>
+> BuildTool     : Maven
 > ORM           : JpaRepository, (QueryDSL 도입 준비중)<br/>
-> IDE           : IntelliJ Ultimate<br/>
+> IDE           : IntelliJ<br/>
 > OS            : Window 10<br/>
 
 <br/>
@@ -191,36 +192,33 @@ Henesis Wallet의 Transaction Mechanism과 API Architecture를 분석했습니�
 JAVA 기초문법 복습을 시작했습니다.<br><br>
 
 ## Problem
-비효율적인 현재 메커니즘
+- 비효율적인 현재 알고리즘<br>
     1초마다 모든 메서드를 호출해서 정보 업데이트 감지<br>
     DB에 저장 및 갱신할 방법이 떠오르지 않음.<br>
     그에 따라 JSON 전처리도 고민.<br>
-    
-    
-    Spring boot 에서 문제가 발생Java Script 의 절실한 도움 필요.
-    그러나 크롤러가 아니고 실제 API 정보를 가공해야하므로 
-
-크롤러가 아니고 실제 API 정보를 호출
-    
-
 
 - 배움과 경험 부족<br>
 Json Data 전처리 문제<br>
-    MQ 사용시 소켓 바인딩 실패 문제 -> 공부가 더 필요
-    서적과 Youtube 을 이용한 중구난방 학습
-    섣부른 응용으로 난항
-    Version 마다 다른 문법
+MQ 사용시 소켓 바인딩 실패<br>
+서적과 Youtube 을 이용한 중구난방 학습<br>
+섣부른 응용으로 난항<br>
+Version 마다 다른 문법<br>
     
 ## Solution
-- 순차적인 학습 시작
-    Youtube 무료강좌 활용 <br>
+- 체계적이고 효율적인 학습 필요<br>
+    설계 순서> Youtube 영상 <br>
+    필요한 정보> 책 목차로 탐색 <br>
+    원리 학습> 구글링을 통해 해당 기술 빠르게 파악 <br>
+    문법 및 예제> 공식 문서 활용 <br>
+    
+- 기본기 다지기 필요<br>
+    문법 + 문법 예제 위주 공부 <br>
+    공식 문서 파헤쳐보기 <br>
 
-- 기본기 다지기
-    문법위주의 공부 (Annotation 활용) <br>
-
-- 학습범위 확장
-    Spring Boot 에 국한되지 않고 Spring Framework 전반적인 <br>
-
+- 열린 학습과 신중한 선택 필요<br>
+    Spring Boot 에 국한되지 않고 구현할 서비스에 적용할 기술들 학습<br>
+    학습한 기술을 섣불리 적용하지말고 원리, 문법부터 이해 필요<br>
+    
 <br><br>
 
 ## Impression
@@ -234,59 +232,9 @@ Json Data 전처리 문제<br>
 
 ## Sketch
 ```
-Stream 병렬처리 공부해보자
-Iterator 가 굉장히 불편함..
-주로 사용해야할 부분
-filter
-collector
-
-DTO Generator 사용 > 와 이거 엄청 편함!!
-JSON 데이터 분석 후 DTO 자동생성 (@JsonProperties)
-그리고 lombok 추가 > 끝 
-
-근데 jackson 사용 이유??
-대량데이터에서는 gson 보다 좋다고들었따.
-
-NestedClass
-클래스 안에 클래스 접근 (콤마로)
-
-
-QueryDSL 을 써볼까..?
-컴파일 시점 전에 에러를 발생 시킴
-> IDE의 도움 받아 컴파일 하지 않고 오류 수정 가능
-> 붸릐 긋
-
-ex)
-JPAQueryFactory query = new JPAQueryFactory(em);
-QTransaction transaction = QTransaction.transaction;
-query.selectFrom(transaction)
-    .where(transaction.transferType.eq('DEPOSIT'))
-        .and(transaction.status.eq("MINDED")))
-    .orderBy(transaction.tx_id.desc())
-    .fetch();
-
-# 트랜잭션 도메인에서
-# 입출금 타입이 DEPOIST 이고
-# 트랜잭션상태가 MINDED 인 트랜잭션만 조회해서
-# id 순으로 내림차순 정렬한다.
-# 그리고 패치한다.
-
-// 이 서비스를 확장한다면 아주아주 용이할 듯..?
-
-JPA 장점
-객체 지향적인 코드 
-> 직관적이고 비즈니스 로직에 집중을 도와줌
-> 전체 프로그램 구조를 일관성있게 유지 -> 코드의 가독성 증가
-> SQL을 직접적으로 작성하지 않아 유지보수, 재사용성 편리
-
-JPA 단점
-복잡한 로직의 경우 JPA로 처리하기 어렵다. (통계 처리 등)
-데이터 베이스 중심으로 되어 있는 환경에서는 실제 SQL로 튜닝해야하기 때문에 성능 저하
-**컴파일 전까지 해당 로직 작동여부 확인 불가능!
 
 이벤트 중심 아키텍쳐 설계 필요
 거래 상태에 따라 발생시킬 이벤트, 비즈니스 로직이 다름.
-
 
 기존 API 에 응답을 받아 새로운 REST API 를 구현해야하므로
 마이크로서비스에서 주로 사용하는 구조를 선택
@@ -309,8 +257,12 @@ JPA 단점
 <br><br>
 
 ## References
-    (YouTube) [토크ON세미나] JPA 프로그래밍 기본기 다지기 (김영한/우아한형제들 | SKplanet Tacademy)
+    각종 Offcial Documents
+    https://docs.spring.io/spring-framework/docs/current/javadoc-api/
+    https://spring.io/guides/gs/messaging-stomp-websocket/
+    
     (YouTube) Spring Boot Tutorials (Telusko)
+    (YouTube) [토크ON세미나] 스프링 부트를 이용한 웹 서비스 개발 (SKplanet Tacademy)
     
     처음 배우는 스프링부트2 (김영재 저 | 한빛미디어)
     배워서 바로 쓰는 스프링 프레임워크 (애시시 사린, 제이 샤르마 저/오현석 역 | 한빛미디어)
