@@ -2,18 +2,13 @@ package com.example.demo.service;
 
 import com.example.demo.client.TransferEventClient;
 import com.example.demo.client.dto.TransferEventResultDTO;
-import com.example.demo.event.EventDispatcher;
-import com.example.demo.event.TransferResultEvent;
 import com.example.demo.repository.NotificationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,14 +17,11 @@ public class NotificationServiceImpl implements NotificationService{
 
     private NotificationRepository notificationRepository;
     private TransferEventClient transferEventClient;
-    private EventDispatcher eventDispatcher;
 
     NotificationServiceImpl(NotificationRepository notificationRepository,
-                            TransferEventClient transferEventClient,
-                            EventDispatcher eventDispatcher){
+                            TransferEventClient transferEventClient){
         this.notificationRepository = notificationRepository;
         this.transferEventClient = transferEventClient;
-        this.eventDispatcher = eventDispatcher;
     }
 
 
