@@ -26,16 +26,55 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
         return new TopicExchange(exchangeName);
     }
 
+
+
     @Bean
-    public Queue notificationQueue(@Value("${notification.queue}") final String queueName){
-        return new Queue(queueName, true);
+    Queue depositMinedQueue(){
+        return new Queue("depositMinedQueue", false);
+    }
+    @Bean
+    Queue depositConfirmedQueue(){
+        return new Queue("depositConfirmedQueue", false);
+    }
+    @Bean
+    Queue withdrawPendingQueue(){
+        return new Queue("withdrawPendingQueue", false);
+    }
+    @Bean
+    Queue withdrawConfirmedQueue(){
+        return new Queue("withdrawConfirmedQueue", false);
+    }
+    @Bean
+    Queue allQueue(){
+        return new Queue("allQueue", false);
+    }
+
+
+    @Bean
+    Binding depositMinedBinding(final Queue depositMinedQueue,
+                    final TopicExchange exchange){
+        return BindingBuilder.bind(depositMinedQueue).to(exchange).with("queue.depositMined");
+    }
+    @Bean
+    Binding depositConfirmedBinding(final Queue depositConfirmedQueue,
+                    final TopicExchange exchange){
+        return BindingBuilder.bind(depositConfirmedQueue).to(exchange).with("queue.depositConfirmed");
+    }
+    @Bean
+    Binding withdrawPendingBinding(final Queue withdrawPendingQueue,
+                                    final TopicExchange exchange){
+        return BindingBuilder.bind(withdrawPendingQueue).to(exchange).with("queue.withdrawPending");
+    }
+    @Bean
+    Binding withdrawConfirmedBinding(final Queue withdrawConfirmedQueue,
+                                    final TopicExchange exchange){
+        return BindingBuilder.bind(withdrawConfirmedQueue).to(exchange).with("queue.withdrawConfirmed");
     }
 
     @Bean
-    Binding binding(final Queue queue,
-                    final TopicExchange exchange,
-                    @Value("${notification.anything.routing-key}") final String routingKey){
-        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+    Binding allBinding(final Queue allQueue,
+                       final TopicExchange exchange){
+        return BindingBuilder.bind(allQueue).to(exchange).with("queue.*");
     }
 
     @Bean
