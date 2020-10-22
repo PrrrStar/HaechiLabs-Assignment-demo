@@ -30,59 +30,9 @@ public class NotificationServiceImpl implements NotificationService{
         this.eventDispatcher = eventDispatcher;
     }
 
-
     /**
-     * 입출금 타입과 트랜잭션 상태로 필터링
-     * @param transferType
-     * @param status
-     * @return
-     * @throws JsonProcessingException
-     */
-
-    @Override
-    public List<TransferEventResultDTO.Results> retrieveTxByTransferTypeAndStatus(String transferType, String status)
-            throws JsonProcessingException {
-
-        List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
-        List<TransferEventResultDTO.Results> transactions = results.stream()
-                .filter(t -> t.getTransferType().contains(transferType))
-                .filter(s -> s.getStatus().contains(status))
-                .collect(Collectors.toList());
-
-        ObjectMapper mapper = new ObjectMapper();
-        //List<TransferResultEvent> a = mapper.readValue(transactions.get(0).getClass(),TransferResultEvent.class);
-
-        /*
-         * 1초마다 Scheduler 로 컨트롤러에서 이 메서드를 호출하는건 굉장한 낭비다.
-         * return 하기 전에 event 메세지를 보내는 건?
-         *         System.out.println(transferType+" | "+status);
-                    System.out.println(transactions);
-                    System.out.println("");
-         */
-
-        return transactions;
-    }
-
-    /**
-     * 입출금 타입으로 필터링
-     * @param transferType
-     * @return
-     */
-    @Override
-    public List<TransferEventResultDTO.Results> retrieveTxByTransferType(String transferType)
-            throws JsonProcessingException {
-
-        List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
-        List<TransferEventResultDTO.Results> transactions = results.stream()
-                .filter(t -> t.getTransferType().contains(transferType))
-                .collect(Collectors.toList());
-
-        return transactions;
-    }
-
-    /**
-     * 전체 트랜잭션 조회
-     * @return
+     * 전체 트랜잭션 정보 조회
+     * @return List<TransferEventResultDTO.Results>
      */
     @Override
     public List<TransferEventResultDTO.Results> retrieveAllTxInfo()throws JsonProcessingException {
@@ -91,33 +41,16 @@ public class NotificationServiceImpl implements NotificationService{
         results.stream().forEach(x->{
             txDetector(x);
         });
-
         return results;
     }
 
-    @Override
-    public List<TransferEventResultDTO.Results> retrieveDepositMinedTx(Notification notification) {
-        System.out.println("Deposit Mined : "+notification);
-        return null;
-    }
 
-    @Override
-    public List<TransferEventResultDTO.Results> retrieveDepositConfirmedTx(Notification notification) {
-        System.out.println("Deposit Confirmed : "+notification);
-        return null;
-    }
-
-    @Override
-    public List<TransferEventResultDTO.Results> retrieveWithdrawPendingTx(Notification notification) {
-        System.out.println("Withdraw Pending : "+notification);
-        return null;
-    }
-
-    @Override
-    public List<TransferEventResultDTO.Results> retrieveWithdrawConfirmedTx(Notification notification) {
-        System.out.println("Withdraw Confirmed : "+notification);
-        return null;
-    }
+    /**
+     * 전체 트랜잭션 중 Transfer Type 과 Status 별로 Notification 객체에 set 한다.
+     * 해당 객체는 Rabbit MQ의 send Method 로 각각의 큐에 보내진다.
+     * @param results
+     * @return
+     */
     private Notification txDetector(final TransferEventResultDTO.Results results){
         Notification notification = new Notification();
         if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("MINED")){
@@ -146,6 +79,11 @@ public class NotificationServiceImpl implements NotificationService{
         notificationRepository.save(notification);
     }
 
+    /**
+     * 타입, 상태 별 객체를 할당하는 Method
+     * @param results
+     * @return Notification
+     */
     private Notification setNotificationInfo(final TransferEventResultDTO.Results results){
         Notification notification = new Notification(
                 results.getTransactionId(),
@@ -158,10 +96,29 @@ public class NotificationServiceImpl implements NotificationService{
         return notification;
     }
 
-    /*
-                List<TransferEventResultDTO.Results> depositConfirmedTx = notification.stream()
-                    .filter(t -> t.getTransferType().contains("DEPOSIT") && t.getStatus().contains("CONFIRMED"))
-                    .collect(Collectors.toList());
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveDepositMinedTx(Notification notification) {
+        System.out.println("Deposit Mined : "+notification);
+        return null;
+    }
 
-     */
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveDepositConfirmedTx(Notification notification) {
+        System.out.println("Deposit Confirmed : "+notification);
+        return null;
+    }
+
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveWithdrawPendingTx(Notification notification) {
+        System.out.println("Withdraw Pending : "+notification);
+        return null;
+    }
+
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveWithdrawConfirmedTx(Notification notification) {
+        System.out.println("Withdraw Confirmed : "+notification);
+        return null;
+    }
+
+
 }
