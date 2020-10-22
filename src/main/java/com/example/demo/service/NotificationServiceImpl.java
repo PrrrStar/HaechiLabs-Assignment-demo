@@ -3,6 +3,8 @@ package com.example.demo.service;
 import com.example.demo.client.TransferEventClient;
 import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.domain.Notification;
+import com.example.demo.event.EventDispatcher;
+import com.example.demo.event.EventHandler;
 import com.example.demo.repository.NotificationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,11 +20,14 @@ public class NotificationServiceImpl implements NotificationService{
 
     private NotificationRepository notificationRepository;
     private TransferEventClient transferEventClient;
+    private EventDispatcher eventDispatcher;
 
     NotificationServiceImpl(NotificationRepository notificationRepository,
-                            TransferEventClient transferEventClient){
+                            TransferEventClient transferEventClient,
+                            EventDispatcher eventDispatcher){
         this.notificationRepository = notificationRepository;
         this.transferEventClient = transferEventClient;
+        this.eventDispatcher = eventDispatcher;
     }
 
 
@@ -80,23 +85,63 @@ public class NotificationServiceImpl implements NotificationService{
      * @return
      */
     @Override
-    public List<TransferEventResultDTO.Results> retrieveTxALL()throws JsonProcessingException {
+    public List<TransferEventResultDTO.Results> retrieveAllTxInfo()throws JsonProcessingException {
 
         List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
-
-        List<TransferEventResultDTO.Results> transactions = results.stream()
-                .filter(t -> t.getTransferType().contains("DEPOSIT") && t.getStatus().contains("CONFIRMED"))
-                .collect(Collectors.toList());
-        transactions.stream().forEach(x->{
-            saveTransactionInfo(x);
+        results.stream().forEach(x->{
+            txDetector(x);
+            System.out.println(x);
         });
 
+        return results;
+    }
 
-        return transactions;
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveDepositMinedTx(Notification notification) {
+        System.out.println("notification!!! : "+notification);
+        System.out.println("Miinii");
+        return null;
+    }
+
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveDepositConfirmedTx() {
+
+        return null;
     }
 
 
-    private Notification saveTransactionInfo(final TransferEventResultDTO.Results results){
+    private Notification txDetector(final TransferEventResultDTO.Results results){
+        Notification notification = new Notification();
+        if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("MINED")){
+            notification = setNotificationInfo(results);
+            System.out.println("DM-N"+notification);
+            eventDispatcher.send(notification);
+        }
+        if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("CONFIRMED")){
+            notification = setNotificationInfo(results);
+            System.out.println("DC-N"+notification);
+            eventDispatcher.send(notification);
+        }
+        if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("PENDING")){
+            notification = setNotificationInfo(results);
+            System.out.println("WP-N"+notification);
+            eventDispatcher.send(notification);
+        }
+        if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("CONFIRMED")){
+            notification = setNotificationInfo(results);
+            System.out.println("WC-N"+notification);
+            eventDispatcher.send(notification);
+        }
+
+        return notification;
+    }
+
+    private void saveNotification(final TransferEventResultDTO.Results results){
+        Notification notification = setNotificationInfo(results);
+        notificationRepository.save(notification);
+    }
+
+    private Notification setNotificationInfo(final TransferEventResultDTO.Results results){
         Notification notification = new Notification(
                 results.getTransactionId(),
                 results.getTransactionHash(),
@@ -105,9 +150,13 @@ public class NotificationServiceImpl implements NotificationService{
                 results.getTo(),
                 results.getCoinSymbol()
         );
-        System.out.println(notification);
-        notificationRepository.save(notification);
         return notification;
     }
 
+    /*
+                List<TransferEventResultDTO.Results> depositConfirmedTx = notification.stream()
+                    .filter(t -> t.getTransferType().contains("DEPOSIT") && t.getStatus().contains("CONFIRMED"))
+                    .collect(Collectors.toList());
+
+     */
 }

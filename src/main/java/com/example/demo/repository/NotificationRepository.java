@@ -17,13 +17,13 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
      * @param depositId
      * @return
      */
-    List<Notification> findByDepositId(String depositId);
+   // List<Notification> findByDepositId(String depositId);
 
     /**
      * withdrawId 로 출금 알람정보 가져오기
      * @param withdrawId
      * @return
      */
-    List<Notification> findByWithdrawId(String withdrawId);
+  //  List<Notification> findByWithdrawId(String withdrawId);
 
 }
