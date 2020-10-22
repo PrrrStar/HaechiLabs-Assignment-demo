@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * 코인 입출금 내역과 REST로 연결하기 위한
@@ -39,11 +39,9 @@ public class TransferEventClientImpl implements TransferEventClient{
      * @throws JsonProcessingException
      */
     public TransferEventResultDTO retrieveTransferEventResultDTO() throws JsonProcessingException {
-        String url = "http://localhost:3000/api/v2/eth/value-transfer-events";
 
         ResponseEntity<String> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, String.class);
         ObjectMapper objectMapper = new ObjectMapper();
-
         TransferEventResultDTO transferEventResultDTO = objectMapper.readValue(response.getBody(), TransferEventResultDTO.class);
 
         return transferEventResultDTO;
@@ -53,10 +51,11 @@ public class TransferEventClientImpl implements TransferEventClient{
      * 서버에서 호출한 결과를 ResponseEntity<String> 타입으로 반환합니다.
      * @return ResponseEntity<String> response (ResponseEntity Type)
      */
-    public ResponseEntity<String> retrieveTransferResults() {
+    public ResponseEntity<TransferEventResultDTO.Results> retrieveTransferResults() {
 
-        ResponseEntity<String> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, String.class);
+        ResponseEntity<TransferEventResultDTO.Results> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.Results.class);
 
         return response;
     }
+
 }
