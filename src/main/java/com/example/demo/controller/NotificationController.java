@@ -32,16 +32,18 @@ public class NotificationController {
     public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
         return notificationService.retrieveAllTxInfo();
     }
-    @GetMapping("/deposit_mined")
+
+
+    @PostMapping("/deposit_mined")
     public List<TransferEventResultDTO.Results> getDepositMinedTx() throws JsonProcessingException {
         return notificationService.retrieveAllTxInfo();
     }
 
     @PostMapping("/deposit_reorged")
     public List<TransferEventResultDTO.Results> getDepositReorgedTx() throws JsonProcessingException {
-        return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","REPLACED");
+        return notificationService.retrieveAllTxInfo();
     }
-    @GetMapping("/deposit_confirm")
+    @PostMapping("/deposit_confirm")
     public List<TransferEventResultDTO.Results> getDepositConfirmTx() throws JsonProcessingException {
         return notificationService.retrieveAllTxInfo();
     }
@@ -51,19 +53,7 @@ public class NotificationController {
     }
     @PostMapping("/withdraw_confirmed")
     public List<TransferEventResultDTO.Results> getWithdrawConfirmedTx() throws JsonProcessingException {
-        return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","CONFIRMED");
-    }
-
-
-
-    @GetMapping("/deposit")
-    public List<TransferEventResultDTO.Results> getDepositTx() throws JsonProcessingException {
-        return notificationService.retrieveTxByTransferType("DEPOSIT");
-    }
-
-    @GetMapping("/withdraw")
-    public List<TransferEventResultDTO.Results> getWithdrawTx() throws JsonProcessingException {
-        return notificationService.retrieveTxByTransferType("WITHDRAWAL");
+        return notificationService.retrieveAllTxInfo();
     }
 
 
