@@ -25,8 +25,6 @@ public class NotificationController {
 
     }
 
-
-
     @GetMapping("/")
     public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
         return notificationService.retrieveTxALL();
