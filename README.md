@@ -292,6 +292,8 @@ Version 마다 다른 문법<br>
 
 ## References
     각종 Offcial Documents
+    https://shortstories.gitbooks.io/studybook/content/message_queue_c815_b9ac/rabbitmq-c0bd-c9c8.html
+    https://www.javainuse.com/messaging/rabbitmq/
     https://docs.spring.io/spring-framework/docs/current/javadoc-api/
     https://spring.io/guides/gs/messaging-stomp-websocket/
     
