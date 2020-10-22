@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.client.dto.TransferEventResultDTO;
+import com.example.demo.domain.Notification;
 import com.example.demo.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,38 +21,34 @@ import java.util.List;
 public class NotificationController {
 
     private final NotificationService notificationService;
+
     public NotificationController(final NotificationService notificationService){
         this.notificationService = notificationService;
 
     }
 
     @GetMapping("/")
+    @Scheduled(fixedDelay = 1000)
     public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
-        return notificationService.retrieveTxALL();
+        return notificationService.retrieveAllTxInfo();
     }
-
-    @Scheduled(fixedDelay = 100)
-    @PostMapping("/deposit_mined")
+    @GetMapping("/deposit_mined")
     public List<TransferEventResultDTO.Results> getDepositMinedTx() throws JsonProcessingException {
-        return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","MINED");
+        return notificationService.retrieveAllTxInfo();
     }
 
-    @Scheduled(fixedDelay = 100)
     @PostMapping("/deposit_reorged")
     public List<TransferEventResultDTO.Results> getDepositReorgedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","REPLACED");
     }
-    @Scheduled(fixedDelay = 100)
-    @PostMapping("/deposit_confirm")
+    @GetMapping("/deposit_confirm")
     public List<TransferEventResultDTO.Results> getDepositConfirmTx() throws JsonProcessingException {
-        return notificationService.retrieveTxByTransferTypeAndStatus("DEPOSIT","CONFIRMED");
+        return notificationService.retrieveDepositConfirmedTx();
     }
-    @Scheduled(fixedDelay = 100)
     @PostMapping("/withdraw_pending")
     public List<TransferEventResultDTO.Results> getWithdrawPendingTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","PENDING");
     }
-    @Scheduled(fixedDelay = 100)
     @PostMapping("/withdraw_confirmed")
     public List<TransferEventResultDTO.Results> getWithdrawConfirmedTx() throws JsonProcessingException {
         return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","CONFIRMED");
