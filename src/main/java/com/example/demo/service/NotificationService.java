@@ -27,6 +27,7 @@ public interface NotificationService {
 
     /**
      * 모든 트랜잭션 조회
+     * @return
      */
     List<TransferEventResultDTO.Results> retrieveTxALL() throws JsonProcessingException;
 

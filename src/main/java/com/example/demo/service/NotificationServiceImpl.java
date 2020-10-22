@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.client.TransferEventClient;
 import com.example.demo.client.dto.TransferEventResultDTO;
+import com.example.demo.domain.Notification;
 import com.example.demo.repository.NotificationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,29 +50,13 @@ public class NotificationServiceImpl implements NotificationService{
         /*
          * 1초마다 Scheduler 로 컨트롤러에서 이 메서드를 호출하는건 굉장한 낭비다.
          * return 하기 전에 event 메세지를 보내는 건?
+         *         System.out.println(transferType+" | "+status);
+                    System.out.println(transactions);
+                    System.out.println("");
          */
-        System.out.println(transferType+" | "+status);
-        System.out.println(transactions);
-        System.out.println("");
+
         return transactions;
     }
-
-//
-//            if (transferType=="DEPOSIT"&&status=="MINED") {
-//        transactions.addAll()
-//    }
-//        if (transferType=="DEPOSIT"&&status=="REPLACED") {
-//
-//    }
-//        if (transferType=="DEPOSIT"&&status=="CONFIRMED") {
-//
-//    }
-//        if (transferType=="WITHDRAWAL"&&status=="PENDING") {
-//
-//    }
-//        if (transferType=="WITHDRAWAL"&&status=="CONFIRMED") {
-//
-//    }
 
     /**
      * 입출금 타입으로 필터링
@@ -86,6 +71,7 @@ public class NotificationServiceImpl implements NotificationService{
         List<TransferEventResultDTO.Results> transactions = results.stream()
                 .filter(t -> t.getTransferType().contains(transferType))
                 .collect(Collectors.toList());
+
         return transactions;
     }
 
@@ -94,12 +80,34 @@ public class NotificationServiceImpl implements NotificationService{
      * @return
      */
     @Override
-    public List<TransferEventResultDTO.Results> retrieveTxALL()
-            throws JsonProcessingException {
+    public List<TransferEventResultDTO.Results> retrieveTxALL()throws JsonProcessingException {
+
         List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
 
+        List<TransferEventResultDTO.Results> transactions = results.stream()
+                .filter(t -> t.getTransferType().contains("DEPOSIT") && t.getStatus().contains("CONFIRMED"))
+                .collect(Collectors.toList());
+        transactions.stream().forEach(x->{
+            saveTransactionInfo(x);
+        });
 
-        return results;
+
+        return transactions;
+    }
+
+
+    private Notification saveTransactionInfo(final TransferEventResultDTO.Results results){
+        Notification notification = new Notification(
+                results.getTransactionId(),
+                results.getTransactionHash(),
+                results.getAmount(),
+                results.getFrom(),
+                results.getTo(),
+                results.getCoinSymbol()
+        );
+        System.out.println(notification);
+        notificationRepository.save(notification);
+        return notification;
     }
 
 }
