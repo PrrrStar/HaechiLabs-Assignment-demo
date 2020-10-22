@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Component
 public class EventDispatcher {
@@ -21,10 +22,10 @@ public class EventDispatcher {
         this.notificationRoutingKey = notificationRoutingKey;
     }
 
-    public void send(final Notification notification){
+    public void send(final Notification notification, String exchange, String routingKey){
         rabbitTemplate.convertAndSend(
-                notificationExchange,
-                notificationRoutingKey,
+                exchange,
+                routingKey,
                 notification
         );
     }

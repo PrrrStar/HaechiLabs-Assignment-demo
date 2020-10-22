@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
 /**
  * Notification Service 의 REST API
  */
-
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
@@ -43,11 +43,11 @@ public class NotificationController {
     }
     @GetMapping("/deposit_confirm")
     public List<TransferEventResultDTO.Results> getDepositConfirmTx() throws JsonProcessingException {
-        return notificationService.retrieveDepositConfirmedTx();
+        return notificationService.retrieveAllTxInfo();
     }
     @PostMapping("/withdraw_pending")
     public List<TransferEventResultDTO.Results> getWithdrawPendingTx() throws JsonProcessingException {
-        return notificationService.retrieveTxByTransferTypeAndStatus("WITHDRAWAL","PENDING");
+        return notificationService.retrieveAllTxInfo();
     }
     @PostMapping("/withdraw_confirmed")
     public List<TransferEventResultDTO.Results> getWithdrawConfirmedTx() throws JsonProcessingException {

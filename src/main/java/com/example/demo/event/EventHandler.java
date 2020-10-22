@@ -21,10 +21,9 @@ public class EventHandler {
         this.notificationService = notificationService;
     }
 
-    @RabbitListener(queues = "notification")
-    public void receiveMessage(final Notification notification){
-        System.out.println("Event Handler : "+notification.getTxId());
-        log.info("notification 수신 : {}", notification.getTxId());
+    @RabbitListener(queues = "depositMinedQueue")
+    public void receivedMinedMessage(final Notification notification){
+
         try{
             notificationService.retrieveDepositMinedTx(notification);
         } catch (final Exception e){
@@ -32,7 +31,35 @@ public class EventHandler {
             throw new AmqpRejectAndDontRequeueException(e);
         }
     }
+    @RabbitListener(queues = "depositConfirmedQueue")
+    public void receivedDepositConfirmedMessage(final Notification notification){
 
+        try{
+            notificationService.retrieveDepositConfirmedTx(notification);
+        } catch (final Exception e){
+            log.error("Error ",e);
+            throw new AmqpRejectAndDontRequeueException(e);
+        }
+    }
 
+    @RabbitListener(queues = "withdrawPendingQueue")
+    public void receivedWithdrawPendingMessage(final Notification notification){
 
+        try{
+            notificationService.retrieveWithdrawPendingTx(notification);
+        } catch (final Exception e){
+            log.error("Error ",e);
+            throw new AmqpRejectAndDontRequeueException(e);
+        }
+    }
+    @RabbitListener(queues = "withdrawConfirmedQueue")
+    public void receivedWithdrawConfirmedMessage(final Notification notification){
+
+        try{
+            notificationService.retrieveWithdrawConfirmedTx(notification);
+        } catch (final Exception e){
+            log.error("Error ",e);
+            throw new AmqpRejectAndDontRequeueException(e);
+        }
+    }
 }
