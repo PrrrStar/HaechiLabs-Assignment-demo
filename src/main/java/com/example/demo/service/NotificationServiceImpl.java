@@ -90,7 +90,6 @@ public class NotificationServiceImpl implements NotificationService{
         List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
         results.stream().forEach(x->{
             txDetector(x);
-            System.out.println(x);
         });
 
         return results;
@@ -98,39 +97,45 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public List<TransferEventResultDTO.Results> retrieveDepositMinedTx(Notification notification) {
-        System.out.println("notification!!! : "+notification);
-        System.out.println("Miinii");
+        System.out.println("Deposit Mined : "+notification);
         return null;
     }
 
     @Override
-    public List<TransferEventResultDTO.Results> retrieveDepositConfirmedTx() {
-
+    public List<TransferEventResultDTO.Results> retrieveDepositConfirmedTx(Notification notification) {
+        System.out.println("Deposit Confirmed : "+notification);
         return null;
     }
 
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveWithdrawPendingTx(Notification notification) {
+        System.out.println("Withdraw Pending : "+notification);
+        return null;
+    }
 
+    @Override
+    public List<TransferEventResultDTO.Results> retrieveWithdrawConfirmedTx(Notification notification) {
+        System.out.println("Withdraw Confirmed : "+notification);
+        return null;
+    }
     private Notification txDetector(final TransferEventResultDTO.Results results){
         Notification notification = new Notification();
         if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("MINED")){
             notification = setNotificationInfo(results);
-            System.out.println("DM-N"+notification);
-            eventDispatcher.send(notification);
+            eventDispatcher.send(notification, "notification_exchange","queue.depositMined");
         }
         if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("CONFIRMED")){
             notification = setNotificationInfo(results);
-            System.out.println("DC-N"+notification);
-            eventDispatcher.send(notification);
+            eventDispatcher.send(notification, "notification_exchange","queue.depositConfirmed");
         }
+
         if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("PENDING")){
             notification = setNotificationInfo(results);
-            System.out.println("WP-N"+notification);
-            eventDispatcher.send(notification);
+            eventDispatcher.send(notification, "notification_exchange","queue.withdrawPending");
         }
         if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("CONFIRMED")){
             notification = setNotificationInfo(results);
-            System.out.println("WC-N"+notification);
-            eventDispatcher.send(notification);
+            eventDispatcher.send(notification, "notification_exchange","queue.withdrawConfirmed");
         }
 
         return notification;

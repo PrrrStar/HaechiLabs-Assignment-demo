@@ -36,5 +36,8 @@ public interface NotificationService {
 
 
     List<TransferEventResultDTO.Results> retrieveDepositMinedTx(Notification notification);
-    List<TransferEventResultDTO.Results> retrieveDepositConfirmedTx();
+    List<TransferEventResultDTO.Results> retrieveDepositConfirmedTx(Notification notification);
+    List<TransferEventResultDTO.Results> retrieveWithdrawPendingTx(Notification notification);
+    List<TransferEventResultDTO.Results> retrieveWithdrawConfirmedTx(Notification notification);
+
 }
