@@ -15,5 +15,5 @@ public interface TransferEventClient {
     TransferEventResultDTO retrieveTransferEventResultDTO() throws JsonProcessingException;
 
     //Entity 로 return 하는 메서드
-    ResponseEntity<String> retrieveTransferResults() throws JsonProcessingException;
+    ResponseEntity<TransferEventResultDTO.Results> retrieveTransferResults() throws JsonProcessingException;
 }
