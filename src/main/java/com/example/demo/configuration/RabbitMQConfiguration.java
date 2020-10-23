@@ -30,23 +30,23 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
 
     @Bean
     Queue depositMinedQueue(){
-        return new Queue("depositMinedQueue", false);
+        return new Queue("depositMinedQueue", true);
     }
     @Bean
     Queue depositConfirmedQueue(){
-        return new Queue("depositConfirmedQueue", false);
+        return new Queue("depositConfirmedQueue", true);
     }
     @Bean
     Queue withdrawPendingQueue(){
-        return new Queue("withdrawPendingQueue", false);
+        return new Queue("withdrawPendingQueue", true);
     }
     @Bean
     Queue withdrawConfirmedQueue(){
-        return new Queue("withdrawConfirmedQueue", false);
+        return new Queue("withdrawConfirmedQueue", true);
     }
     @Bean
     Queue allQueue(){
-        return new Queue("allQueue", false);
+        return new Queue("allQueue", true);
     }
 
 
