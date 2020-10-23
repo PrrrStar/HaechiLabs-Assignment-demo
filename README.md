@@ -6,7 +6,7 @@
 > Framework     : Spring Boot 2.3.4.RELEASED <br/>
 > BuildTool     : Maven<br/>
 > Messaging     : RabbitMQ<br/>
-> ORM           : JpaRepository, (QueryDSL 도입 준비중)<br/>
+> ORM           : JpaRepository<br/>
 > IDE           : IntelliJ<br/>
 > OS            : Window 10<br/>
 
