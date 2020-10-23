@@ -5,6 +5,7 @@
 > Language      : JAVA (JDK 14)<br/>
 > Framework     : Spring Boot 2.3.4.RELEASED <br/>
 > BuildTool     : Maven<br/>
+> Messaging     : RabbitMQ<br/>
 > ORM           : JpaRepository, (QueryDSL 도입 준비중)<br/>
 > IDE           : IntelliJ<br/>
 > OS            : Window 10<br/>
@@ -25,23 +26,67 @@
         ┗━ configuration                    # 각종 설정들
             ┗━ RestClientConfiguration           # RestTemplate Builder
             ┗━ QuerydslConfiguration (예정)       # Querydsl 설정파일
+            ┗━ RabbitMQConfiguration             # RabbitMQ 설정파일
 
         ┗━ controller                       # service 호출 및 Endpoint 경로설정
             ┗━ NotificationController            # 알림과 관련된 서비스 호출 및 앤드포인트 경로 설정
 
         ┗━ domain                           # repository에 대한 추상화 지원
-            ┗━ Notification                      # 알림관련 Entity
+            ┗━ DomainConfirmed                   # 알림관련 Entity 입니다.
+            ┗━ DomainMined
+            ┗━ DomainReorged
+            ┗━ WithdrawConfirmed
+            ┗━ WithdrawPending
 
-        ┗━ repository                       # ORM 인터페이스
-            ┗━ NotificationRepository           # JPA Repository 상속
+        ┗━ event                            # 메세징, 요청, 응답 이벤트
+            ┗━ EventDispatcher                  # 메세징 보내는 로직 처리
+            ┗━ EventHandler                     # 메세징 받는 로직 처리
+            ┗━ RequestEvent                     # 요청 이벤트
+            ┗━ ResponseDepositMinedEvent        # Deposit Mined 응답
+            ┗━ ResponseWithdrawPendingEvent     # Withdraw Pending 응답
+
+        ┗━ repository                       # JPA Repository 입니다.
+            ┗━ DepositConfirmedRepository       # Id 로 조회합니다.
+            ┗━ DepositMinedRepository           # Id, Transaction Hash 로 조회할 수 있습니다.
+            ┗━ DepositReorgedRepository         # Id 로 조회합니다.
+            ┗━ WithdrawConfirmedRepository      # Id 로 조회합니다.
+            ┗━ WithdrawPendingRepository        # Id, Transaction Id 로 조회할 수 있습니다.
 
         ┗━ service                          # 비즈니스 로직 처리
+            ┗━MonitoringService                 # 모니터링서비스 인터페이스
+            ┗━MonitoringServiceImpl             # 모니터링 서비스 로직 구현체
             ┗━NotificationService               # 알림서비스 인터페이스
             ┗━NotificationServiceImpl           # 알림서비스 비즈니스 로직을 처리할 구현체
   ```
 <br/>
 
 ## Timeline
+
+- 10월 23일 (금)<br>
+전체적인 구조개편<br>
+value-transfer-events 서버에서 Decimals 값이 추가됨을 확인해 DTO를 수정했습니다.<br><br>
+상태, 타입 별로 다른 요청, 응답, 서비스 로직을 수행하므로
+Repository, Service, Event 를 세부적으로 나눴습니다.<br><br>
+모니터링 서비스와 알림응답 서비스를 나눴습니다.<br><br>
+Reorganization 에 대해 공부하고 해당 로직을 구현했습니다.<br>
+하지만 테스트에서 reorg 현상을 캐치하지는 못했습니다.<br><br>
+구조개편과 메커니즘 변경으로 RabbitMQ가 필요없어졌습니다.<br>
+하지만 다른 어플리케이션에 데이터를 보낼 때 요긴하게 쓰일 것 같습니다.<br>
+
+<br>
+
+- 10월 22일 (목)<br>
+RabbitMQ 를 활용해 각 큐별로 해당 트랜잭션 정보 보내기 성공했습니다.<br>
+하지만 중복, 또는 누락 트렌잭션을 다루는데 다른 방법이 필요해 보입니다.<br>
+
+<br>
+
+- 10월 21일 (수)<br>
+Flux 예제를 구현해보았습니다.<br>
+이론적으론 이해했으나 아직 이 과제에서 구현은 힘들어보입니다. 조금 더 테스트가 필요합니다.<br> 
+
+<br>
+
 - 10월 20일 (화)<br>
 Reactive Java Spring<br><br>
 Responsive<br>
@@ -64,19 +109,20 @@ looselycoupled<br>
 어플이 어떤요청을 받고 DB가 동작을 할때까지 기다리는 게아닌
 중간에 다른레이어가있고 거기서 OK 던지고주변에 다른 worker들이 동작해서 DB에 넣어줌
 처리될 때까지 기다릴래가 아니고 너한테줬으니 니가 알아서 처리해, 난 다른 일 할래
+    > 인프라 간 상호 운용성에 집중(서버, 디비 , 웹 프레임워크)
+    > Non-blocking Back pressure 가 제공하는 비동기 Stream processing 표준
+    > Back pressure 가 지원되는publisher + subscriber
+     *Back pressure ? <br>
+    구독자가 어떤 상태인지 상관없이 발행자는 계속 던질 수 있다.<br>
+    ex) 수도관<br>
+    배관의 직경이나 길이에 따른 적정압력이 있는데 초과용량이 흐르면 역류.<br><br>
+    스트림 처리방식 Mono, Flux
+    Mono 하나의 아이디로 repo 에 검색해서 return을  받는 형식
+    Flux 여러개를 연속적으로 처리하는 것.
 
-> 인프라 간 상호 운용성에 집중(서버, 디비 , 웹 프레임워크)
-> Non-blocking Back pressure 가 제공하는 비동기 Stream processing 표준
-> Back pressure 가 지원되는publisher + subscriber
+<br>
 
- *Back pressure ? <br>
-구독자가 어떤 상태인지 상관없이 발행자는 계속 던질 수 있다.<br>
-ex) 수도관<br>
-배관의 직경이나 길이에 따른 적정압력이 있는데 초과용량이 흐르면 역류.<br><br>
-스트림 처리방식 Mono, Flux
-Mono 하나의 아이디로 repo 에 검색해서 return을  받는 형식
-Flux 여러개를 연속적으로 처리하는 것.
-- 10월 19일 (월) ~ 9:00 AM <br>
+- 10월 19일 (월)<br>
 Async, Non-blocking 서비스 도입의 필요<br>
 섣부른 도입은 일을 그르칠 수 있기 때문에 단계별로 알아보기로 한다.<br>
 (완성된 과제 제출 또한 중요하지만 더 엉망으로 만들 순 없으니까..ㅠㅠ)<br>
@@ -92,7 +138,7 @@ Async, Non-blocking 서비스 도입의 필요<br>
     그러기 위해 WebFlux 와 같은 Reactive Framework 와 <br>
     기존 도입을 계획했던 RabbitMQ 비교분석이 우선이다.
 
-
+<br>
 
 - 10월 18일 (일)<br>
 풀타임 아르바이트로 인해 많이 작업을 하지 못했습니다.<br>
@@ -106,6 +152,7 @@ Controller의 모든 메서드가 반복실행 될 필요 없다.<br><br>
 클라이언트는 Notification Domain 에 값을 저장해야 한다.<br>
 (하나로 묶을지, 클라이언트 별로 나눌지 고민해보자)<br>
 
+<br>
 
 - 10월 17일 (토)<br>
 Scheduler 를 이용해 전체 거래 내역을 1초마다 Update 한다.<br>
@@ -226,32 +273,12 @@ Henesis Wallet의 Transaction Mechanism과 API Architecture를 분석했습니�
 JAVA 기초문법 복습을 시작했습니다.<br><br>
 
 ## Problem
-- 비효율적인 현재 알고리즘<br>
-    1초마다 모든 메서드를 호출해서 정보 업데이트 감지<br>
-    DB에 저장 및 갱신할 방법이 떠오르지 않음.<br>
-    그에 따라 JSON 전처리도 고민.<br>
-
-- 배움과 경험 부족<br>
-Json Data 전처리 문제<br>
-MQ 사용시 소켓 바인딩 실패<br>
-서적과 Youtube 을 이용한 중구난방 학습<br>
-섣부른 응용으로 난항<br>
-Version 마다 다른 문법<br>
-    
+- 페이징 처리 후 모든 거래내역 조회가 필요합니다.<br>
+- 1초 이내로 변하는 Mined, Reorged, Pending 은 검출 불가합니다.
+- 최근 거래 내역 조회가 필요합니다.
+- RabbitMQ 가 필요없어졌지만 원하는 정보를 다른 어플리케이션에 전송하는데 요긴할 것 같습니다.
 ## Solution
-- 체계적이고 효율적인 학습 필요<br>
-    설계 순서> Youtube 영상 <br>
-    필요한 정보> 책 목차로 탐색 <br>
-    원리 학습> 구글링을 통해 해당 기술 빠르게 파악 <br>
-    문법 및 예제> 공식 문서 활용 <br>
-    
-- 기본기 다지기 필요<br>
-    문법 + 문법 예제 위주 공부 <br>
-    공식 문서 파헤쳐보기 <br>
-
-- 열린 학습과 신중한 선택 필요<br>
-    Spring Boot 에 국한되지 않고 구현할 서비스에 적용할 기술들 학습<br>
-    학습한 기술을 섣불리 적용하지말고 원리, 문법부터 이해 필요<br>
+- 스프링 부트에서 페이징 처리하는 방법 학습이 필요합니다.
     
 <br><br>
 
