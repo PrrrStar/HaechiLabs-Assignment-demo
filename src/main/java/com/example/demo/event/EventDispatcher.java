@@ -1,32 +1,33 @@
 package com.example.demo.event;
 
-import com.example.demo.domain.Notification;
+import com.example.demo.domain.DepositConfirmed;
+import com.example.demo.domain.DepositMined;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Component
 public class EventDispatcher {
     private RabbitTemplate rabbitTemplate;
-    private String notificationExchange;
-    private String notificationRoutingKey;
 
     @Autowired
-    EventDispatcher(final RabbitTemplate rabbitTemplate,
-                    @Value("${notification.exchange}") String notificationExchange,
-                    @Value("${notification.key}") String notificationRoutingKey){
+    EventDispatcher(final RabbitTemplate rabbitTemplate){
         this.rabbitTemplate = rabbitTemplate;
-        this.notificationExchange = notificationExchange;
-        this.notificationRoutingKey = notificationRoutingKey;
     }
 
-    public void send(final Notification notification, String exchange, String routingKey){
+    public void depositMindedSend(final DepositMined depositMined, String exchange, String routingKey){
         rabbitTemplate.convertAndSend(
                 exchange,
                 routingKey,
-                notification
+                depositMined
+        );
+    }
+    public void depositConfirmedSend(final DepositConfirmed depositConfirmed, String exchange, String routingKey){
+        rabbitTemplate.convertAndSend(
+                exchange,
+                routingKey,
+                depositConfirmed
         );
     }
 
