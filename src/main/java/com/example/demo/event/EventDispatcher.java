@@ -2,9 +2,10 @@ package com.example.demo.event;
 
 import com.example.demo.domain.DepositConfirmed;
 import com.example.demo.domain.DepositMined;
+import com.example.demo.domain.WithdrawConfirmed;
+import com.example.demo.domain.WithdrawPending;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,6 +29,20 @@ public class EventDispatcher {
                 exchange,
                 routingKey,
                 depositConfirmed
+        );
+    }
+    public void withdrawPendingSend(final WithdrawPending withdrawPending, String exchange, String routingKey){
+        rabbitTemplate.convertAndSend(
+                exchange,
+                routingKey,
+                withdrawPending
+        );
+    }
+    public void withdrawConfirmedSend(final WithdrawConfirmed withdrawConfirmed, String exchange, String routingKey){
+        rabbitTemplate.convertAndSend(
+                exchange,
+                routingKey,
+                withdrawConfirmed
         );
     }
 
