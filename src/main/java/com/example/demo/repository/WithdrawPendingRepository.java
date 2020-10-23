@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 
+import com.example.demo.domain.DepositMined;
 import com.example.demo.domain.WithdrawPending;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,8 @@ public interface WithdrawPendingRepository extends JpaRepository<WithdrawPending
      * @return
      */
     Optional<WithdrawPending> findByWithdrawId(int withdrawId);
+    Optional<WithdrawPending> findByTxId(String txId);
     List<WithdrawPending> findAllByWithdrawId(int withdrawId);
+    List<WithdrawPending> findAllByWalletId(int walletId);
 
 }
