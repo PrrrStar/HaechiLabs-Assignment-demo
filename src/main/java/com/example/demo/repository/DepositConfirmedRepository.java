@@ -18,6 +18,7 @@ public interface DepositConfirmedRepository extends JpaRepository<DepositConfirm
      */
     Optional<DepositConfirmed> findByDepositId(int depositId);
     List<DepositConfirmed> findAllByDepositId(int depositId);
+    List<DepositConfirmed> findAllByWalletId(int walletId);
 
 
 }

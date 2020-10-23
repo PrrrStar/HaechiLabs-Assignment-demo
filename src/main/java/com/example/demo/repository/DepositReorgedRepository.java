@@ -18,5 +18,6 @@ public interface DepositReorgedRepository extends JpaRepository<DepositReorged, 
      */
     Optional<DepositReorged> findByDepositId(int depositId);
     List<DepositReorged> findAllByDepositId(int depositId);
+    List<DepositReorged> findAllByWalletId(int walletId);
 
 }
