@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * 코인 입출금 내역과 REST로 연결하기 위한
@@ -48,12 +47,22 @@ public class TransferEventClientImpl implements TransferEventClient{
     }
 
     /**
-     * 서버에서 호출한 결과를 ResponseEntity<String> 타입으로 반환합니다.
-     * @return ResponseEntity<String> response (ResponseEntity Type)
+     * 서버에서 호출한 결과를 ResponseEntity<TransferEventResultDTO.Results> 타입으로 반환합니다.
+     * @return ResponseEntity<TransferEventResultDTO.Results> response (ResponseEntity Type)
      */
     public ResponseEntity<TransferEventResultDTO.Results> retrieveTransferResults() {
 
         ResponseEntity<TransferEventResultDTO.Results> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.Results.class);
+
+        return response;
+    }
+
+    /**
+     * 서버에서 호출한 페이징 결과를 ResponseEntity<TransferEventResultDTO.Pagination> 타입으로 반환합니다.
+     * @return ResponseEntity<TransferEventResultDTO.Pagination> response (ResponseEntity Type)
+     */
+    public ResponseEntity<TransferEventResultDTO.Pagination> retrievePagiantion(){
+        ResponseEntity<TransferEventResultDTO.Pagination> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.Pagination.class);
 
         return response;
     }

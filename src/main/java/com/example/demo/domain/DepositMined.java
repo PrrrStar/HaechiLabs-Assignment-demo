@@ -22,6 +22,7 @@ public final class DepositMined {
     @GeneratedValue
     @Column(updatable = false)
     private Long id;
+
     //Request
     private final String txHash;
     private final String amount;
