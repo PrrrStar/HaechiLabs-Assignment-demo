@@ -1,20 +1,18 @@
 package com.example.demo.controller;
 
 import com.example.demo.client.dto.TransferEventResultDTO;
-import com.example.demo.domain.Notification;
+import com.example.demo.domain.DepositConfirmed;
+import com.example.demo.domain.DepositMined;
 import com.example.demo.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
 /**
- * Notification Service 의 REST API
+ * DepositMined Service 의 REST API
  */
 @RestController
 @RequestMapping("/notifications")
@@ -28,15 +26,15 @@ public class NotificationController {
     }
 
     @GetMapping("/")
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 10000)
     public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
         return notificationService.retrieveAllTxInfo();
     }
 
 
     @PostMapping("/deposit_mined")
-    public List<TransferEventResultDTO.Results> getDepositMinedTx() throws JsonProcessingException {
-        return notificationService.retrieveAllTxInfo();
+    public List<DepositMined> getDepositMinedTx(DepositMined depositMined) throws JsonProcessingException {
+        return notificationService.retrieveDepositMinedTx(depositMined);
     }
 
     @PostMapping("/deposit_reorged")
@@ -44,16 +42,16 @@ public class NotificationController {
         return notificationService.retrieveAllTxInfo();
     }
     @PostMapping("/deposit_confirm")
-    public List<TransferEventResultDTO.Results> getDepositConfirmTx() throws JsonProcessingException {
-        return notificationService.retrieveAllTxInfo();
+    public List<DepositConfirmed> getDepositConfirmTx(DepositConfirmed depositConfirmed) throws JsonProcessingException {
+        return notificationService.retrieveDepositConfirmedTx(depositConfirmed);
     }
     @PostMapping("/withdraw_pending")
-    public List<TransferEventResultDTO.Results> getWithdrawPendingTx() throws JsonProcessingException {
-        return notificationService.retrieveAllTxInfo();
+    public List<DepositMined> getWithdrawPendingTx(DepositMined depositMined) throws JsonProcessingException {
+        return notificationService.retrieveWithdrawPendingTx(depositMined);
     }
     @PostMapping("/withdraw_confirmed")
-    public List<TransferEventResultDTO.Results> getWithdrawConfirmedTx() throws JsonProcessingException {
-        return notificationService.retrieveAllTxInfo();
+    public List<DepositMined> getWithdrawConfirmedTx(DepositMined depositMined) throws JsonProcessingException {
+        return notificationService.retrieveWithdrawConfirmedTx(depositMined);
     }
 
 
