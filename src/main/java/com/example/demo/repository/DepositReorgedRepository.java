@@ -1,6 +1,6 @@
 package com.example.demo.repository;
 
-import com.example.demo.domain.DepositConfirmed;
+
 import com.example.demo.domain.DepositReorged;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,7 +16,7 @@ public interface DepositReorgedRepository extends JpaRepository<DepositReorged, 
      * @param depositId
      * @return
      */
-    Optional<DepositConfirmed> findByDepositId(int depositId);
-    List<DepositConfirmed> findAllByDepositId(int depositId);
+    Optional<DepositReorged> findByDepositId(int depositId);
+    List<DepositReorged> findAllByDepositId(int depositId);
 
 }

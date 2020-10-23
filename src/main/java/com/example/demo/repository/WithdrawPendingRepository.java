@@ -13,11 +13,10 @@ public interface WithdrawPendingRepository extends JpaRepository<WithdrawPending
 
     /**
      * walletId 로 입금 알람정보 가져오기
-     * @param walletId
+     * @param withdrawId
      * @return
      */
-    Optional<WithdrawPending> findByWalletId(String walletId);
-    List<WithdrawPending> findAllByWalletId(String walletId);
-
+    Optional<WithdrawPending> findByWithdrawId(int withdrawId);
+    List<WithdrawPending> findAllByWithdrawId(int withdrawId);
 
 }

@@ -13,11 +13,11 @@ public interface WithdrawConfirmedRepository extends JpaRepository<WithdrawConfi
 
     /**
      * walletId 로 입금 알람정보 가져오기
-     * @param walletId
+     * @param withdrawId
      * @return
      */
-    Optional<WithdrawConfirmed> findByWalletId(String walletId);
-    List<WithdrawConfirmed> findAllByWalletId(String walletId);
+    Optional<WithdrawConfirmed> findByWithdrawId(int withdrawId);
+    List<WithdrawConfirmed> findAllByWithdrawId(int withdrawId);
 
 
 }
