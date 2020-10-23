@@ -18,6 +18,7 @@ public interface WithdrawConfirmedRepository extends JpaRepository<WithdrawConfi
      */
     Optional<WithdrawConfirmed> findByWithdrawId(int withdrawId);
     List<WithdrawConfirmed> findAllByWithdrawId(int withdrawId);
+    List<WithdrawConfirmed> findAllByWalletId(int walletId);
 
 
 }
