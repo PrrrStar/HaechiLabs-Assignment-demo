@@ -1,10 +1,10 @@
 package com.example.demo.event;
 
-import com.example.demo.controller.NotificationController;
 import com.example.demo.domain.DepositConfirmed;
 import com.example.demo.domain.DepositMined;
 import com.example.demo.domain.WithdrawConfirmed;
 import com.example.demo.domain.WithdrawPending;
+import com.example.demo.service.MonitoringService;
 import com.example.demo.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
@@ -15,17 +15,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventHandler {
 
+    private MonitoringService monitoringService;
     private NotificationService notificationService;
-
-    EventHandler(final NotificationService notificationService){
+    EventHandler(final MonitoringService monitoringService,
+                 final NotificationService notificationService){
+        this.monitoringService = monitoringService;
         this.notificationService = notificationService;
-    }
 
+    }
+/*
     @RabbitListener(queues = "depositMinedQueue")
     public void receivedMinedMessage(final DepositMined depositMined){
 
         try{
-            notificationService.retrieveDepositMinedTx(depositMined);
+            notificationService.dm(depositMined);
         } catch (final Exception e){
             log.error("Error ",e);
             throw new AmqpRejectAndDontRequeueException(e);
@@ -61,5 +64,5 @@ public class EventHandler {
             throw new AmqpRejectAndDontRequeueException(e);
         }
     }
-
+*/
 }
