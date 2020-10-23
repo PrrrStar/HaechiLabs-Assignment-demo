@@ -18,6 +18,8 @@ public interface DepositMinedRepository extends JpaRepository<DepositMined, Long
      * @return
      */
     Optional<DepositMined> findByDepositId(int depositId);
+    Optional<DepositMined> findByTxHash(String txHash);
     List<DepositMined> findAllByDepositId(int depositId);
+    List<DepositMined> findAllByWalletId(int walletId);
 
 }
