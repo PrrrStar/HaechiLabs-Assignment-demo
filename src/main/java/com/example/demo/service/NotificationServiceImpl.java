@@ -2,9 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.client.TransferEventClient;
 import com.example.demo.client.dto.TransferEventResultDTO;
-import com.example.demo.domain.DepositConfirmed;
-import com.example.demo.domain.DepositMined;
-import com.example.demo.domain.DepositReorged;
+import com.example.demo.domain.*;
 import com.example.demo.event.EventDispatcher;
 import com.example.demo.event.ResponseEvent;
 import com.example.demo.repository.*;
@@ -52,7 +50,6 @@ public class NotificationServiceImpl implements NotificationService{
         List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
         results.stream().forEach(x->{
             txDetector(x);
-            System.out.println(x);
         });
         return results;
     }
@@ -68,6 +65,8 @@ public class NotificationServiceImpl implements NotificationService{
         DepositMined depositMined;
         DepositConfirmed depositConfirmed;
         DepositReorged depositReorged;
+        WithdrawPending withdrawPending;
+        WithdrawConfirmed withdrawConfirmed;
 
         int eventId = results.getId();
         if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("MINED")){
@@ -76,17 +75,17 @@ public class NotificationServiceImpl implements NotificationService{
         }
 
         if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("CONFIRMED")){
-            depositConfirmed = saveDepositConfirmedByEventId(results, eventId);
+            depositConfirmed = saveDepositConfirmedByDepositId(results, eventId);
             eventDispatcher.depositConfirmedSend(depositConfirmed, "notification_exchange","queue.depositConfirmed");
         }
-//        if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("PENDING")){
-//            depositMined = setNotificationInfo(results);
-//            eventDispatcher.send(depositMined, "notification_exchange","queue.withdrawPending");
-//        }
-//        if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("CONFIRMED")){
-//            depositMined = setNotificationInfo(results);
-//            eventDispatcher.send(depositMined, "notification_exchange","queue.withdrawConfirmed");
-//        }
+        if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("PENDING")){
+            withdrawPending = saveWithdrawPendingByWithdrawId(results, eventId);
+            eventDispatcher.withdrawPendingSend(withdrawPending, "notification_exchange","queue.withdrawPending");
+        }
+        if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("CONFIRMED")){
+            withdrawConfirmed = saveWithdrawConfirmedByWithdrawId(results, eventId);
+            eventDispatcher.withdrawConfirmedSend(withdrawConfirmed, "notification_exchange","queue.withdrawConfirmed");
+        }
 
     }
 
@@ -102,13 +101,14 @@ public class NotificationServiceImpl implements NotificationService{
                 results.getId()
         );
         if(!depositMinedRepository.findByDepositId(depositId).isPresent()){
+            System.out.println("Save Deposit Mined transaction... ");
             depositMinedRepository.save(depositMined);
-            System.out.println("입금 채굴 상태 저장");
+            System.out.println("Success...!");
         }
         return depositMined;
     }
 
-    private DepositConfirmed saveDepositConfirmedByEventId(final TransferEventResultDTO.Results results,
+    private DepositConfirmed saveDepositConfirmedByDepositId(final TransferEventResultDTO.Results results,
                                                             final int depositId){
         DepositConfirmed depositConfirmed = new DepositConfirmed(
                 results.getTransactionId(),
@@ -117,35 +117,75 @@ public class NotificationServiceImpl implements NotificationService{
                 results.getWalletId()
         );
         if(!depositConfirmedRepository.findByDepositId(depositId).isPresent()){
+            System.out.println("Save Deposit Confirmed transaction... ");
             depositConfirmedRepository.save(depositConfirmed);
-            System.out.println("입금 확인 상태 저장");
+            System.out.println("Success...!");
         }
         return depositConfirmed;
     }
 
 
+    private WithdrawPending saveWithdrawPendingByWithdrawId(final TransferEventResultDTO.Results results,
+                                                          final int withdrawId){
+        WithdrawPending withdrawPending = new WithdrawPending(
+                results.getTransactionId(),
+                results.getAmount(),
+                results.getFrom(),
+                results.getTo(),
+                results.getWalletId(),
+                results.getCoinSymbol(),
+                results.getId()
+        );
+        if(!withdrawPendingRepository.findByWithdrawId(withdrawId).isPresent()){
+            System.out.println("Save Withdraw Pending transaction... ");
+            withdrawPendingRepository.save(withdrawPending);
+            System.out.println("Success...!");
+        }
+        return withdrawPending;
+    }
+
+
+
+    private WithdrawConfirmed saveWithdrawConfirmedByWithdrawId(final TransferEventResultDTO.Results results,
+                                                            final int withdrawId){
+        WithdrawConfirmed withdrawConfirmed = new WithdrawConfirmed(
+                results.getTransactionId(),
+                results.getTransactionHash(),
+                results.getId(),
+                results.getWalletId()
+        );
+        if(!withdrawConfirmedRepository.findByWithdrawId(withdrawId).isPresent()){
+            System.out.println("Save Withdraw Confirmed transaction... ");
+            withdrawConfirmedRepository.save(withdrawConfirmed);
+            System.out.println("Success...!");
+
+        }
+        return withdrawConfirmed;
+    }
+
+
+
     @Override
     public List<DepositMined> retrieveDepositMinedTx(DepositMined depositMined) {
-        System.out.println("Deposit Mined : "+ depositMined);
-
+        System.out.println("\nDeposit Mined!"+ depositMined);
         return null;
     }
 
     @Override
     public List<DepositConfirmed> retrieveDepositConfirmedTx(DepositConfirmed depositConfirmed) {
-        System.out.println("Deposit Confirmed : "+ depositConfirmed);
+        System.out.println("\nDeposit Confirmed : "+ depositConfirmed);
         return null;
     }
 
     @Override
-    public List<DepositMined> retrieveWithdrawPendingTx(DepositMined depositMined) {
-        System.out.println("Withdraw Pending : "+ depositMined);
+    public List<WithdrawPending> retrieveWithdrawPendingTx(WithdrawPending withdrawPending) {
+        System.out.println("\nWithdraw Pending : "+ withdrawPending);
         return null;
     }
 
     @Override
-    public List<DepositMined> retrieveWithdrawConfirmedTx(DepositMined depositMined) {
-        System.out.println("Withdraw Confirmed : "+ depositMined);
+    public List<WithdrawConfirmed> retrieveWithdrawConfirmedTx(WithdrawConfirmed withdrawConfirmed) {
+        System.out.println("\nWithdraw Confirmed : "+ withdrawConfirmed);
         return null;
     }
 
