@@ -1,5 +1,6 @@
 package com.example.demo.client.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -9,7 +10,6 @@ import java.util.List;
 /**
  * 트랜잭션이 코인입출금 내역 에서 받아온 데이터를 정의한 DTO클래스
  * 계층형 JSON 구조이기 때문에 Nested class 로 구성했습니다.
- * DTO Generator 를 이용해 쉽게 DTO 를 디자인할 수 있다는 걸 너무 늦게 알았습니다. ㅠㅠ
  */
 
 
@@ -32,6 +32,8 @@ public class TransferEventResultDTO {
         private String to;
         @JsonProperty("amount")
         private String amount;
+        @JsonProperty("decimals")
+        private String decimals;
         @JsonProperty("blockchain")
         private String blockchain;
         @JsonProperty("status")
