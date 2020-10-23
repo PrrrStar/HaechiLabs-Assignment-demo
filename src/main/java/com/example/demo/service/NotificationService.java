@@ -1,28 +1,25 @@
 package com.example.demo.service;
 
-import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.domain.DepositConfirmed;
 import com.example.demo.domain.DepositMined;
 import com.example.demo.domain.WithdrawConfirmed;
 import com.example.demo.domain.WithdrawPending;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.demo.event.RequestEvent;
+import com.example.demo.event.ResponseDepositMinedEvent;
+import com.example.demo.event.ResponseWithdrawPendingEvent;
 
 import java.util.List;
 
 public interface NotificationService {
 
 
+    ResponseDepositMinedEvent retrieveDepositMinedTx(RequestEvent requestEvent);
+    void retrieveDepositReorgedTx(RequestEvent requestEvent);
+    void retrieveDepositConfirmedTx(RequestEvent requestEvent);
+    ResponseWithdrawPendingEvent retrieveWithdrawPendingTx(RequestEvent requestEvent);
+    void retrieveWithdrawConfirmedTx(RequestEvent requestEvent);
 
-    /**
-     * 모든 트랜잭션 조회
-     * @return
-     */
-    List<TransferEventResultDTO.Results> retrieveAllTxInfo() throws JsonProcessingException;
 
 
-    List<DepositMined> retrieveDepositMinedTx(DepositMined depositMined);
-    List<DepositConfirmed> retrieveDepositConfirmedTx(DepositConfirmed depositConfirmed);
-    List<WithdrawPending> retrieveWithdrawPendingTx(WithdrawPending withdrawPending);
-    List<WithdrawConfirmed> retrieveWithdrawConfirmedTx(WithdrawConfirmed withdrawConfirmed);
-
+    List<DepositMined> dm(DepositMined depositMined);
 }
