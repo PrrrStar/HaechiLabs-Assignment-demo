@@ -9,11 +9,7 @@ import org.springframework.http.ResponseEntity;
  */
 public interface TransferEventClient {
 
-    //Object call 시간이 어느 것이 짧을까..?
 
-    //DTO 객체로 return 하는 매서드
-    TransferEventResultDTO retrieveTransferEventResultDTO() throws JsonProcessingException;
-
-    //Entity 로 return 하는 메서드
-    ResponseEntity<TransferEventResultDTO.Results> retrieveTransferResults() throws JsonProcessingException;
+    ResponseEntity<TransferEventResultDTO> retrieveTransferResults(String url) throws JsonProcessingException;
+    ResponseEntity<TransferEventResultDTO> detectTransferEvent(String url, String size, String page, String updatedAtGre);
 }
