@@ -29,21 +29,27 @@ public class NotificationController {
         this.valueTransferEventsHost =valueTransferEventsHost;
 
     }
-
-
     private final String url = "http://localhost:3000/api/v2/eth/value-transfer-events";
     private final String size = "50";
     private final int page = 0;
-    private final String updatedAtGte = Long.toString(System.currentTimeMillis()-600000000);    //일주일 전 데이터 조회하기
+    private final String updatedAtGte = Long.toString(System.currentTimeMillis()-600000);    //10분 전 데이터 조회하기
 
+    private int idx = 0;
     /**
      * 3초마다 전체정보 조회 후 모니터링 서비스를 실행한다.
      * @throws JsonProcessingException
      */
     @GetMapping("/")
-    @Scheduled(fixedDelay = 10000)
-    public void getAllTx() throws JsonProcessingException {
-        monitoringService.retrieveAllTxInfo(url, size, page, updatedAtGte);
+    @Scheduled(fixedDelay = 1000)
+    public void getTransactionInfo() {
+
+
+        Long start_time = System.currentTimeMillis();
+        monitoringService.retrieveTransactionInfo(url, size, page, updatedAtGte);
+        Long end_time = System.currentTimeMillis();
+
+        System.out.println("No. "+idx+", Run-Time : "+(end_time-start_time)+"ms");
+        idx++;
     }
 
 

@@ -47,7 +47,6 @@ public class TransferEventClientImpl implements TransferEventClient{
                 .queryParam("size",size)
                 .queryParam("updatedAtGte",updatedAtGte)
                 .build(false);         //인코딩 False
-        System.out.println(builder);
         ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
         return response;
     }
