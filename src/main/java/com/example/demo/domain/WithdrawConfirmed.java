@@ -27,6 +27,6 @@ public class WithdrawConfirmed {
 
 
     public WithdrawConfirmed() {
-        this(null,null,0, null);
+        this(null,null,-1, null);
     }
 }

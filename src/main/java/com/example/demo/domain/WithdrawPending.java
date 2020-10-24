@@ -30,6 +30,6 @@ public class WithdrawPending {
 
 
     public WithdrawPending() {
-        this(null,null,null, null,null,null,0);
+        this(null,null,null, null,null,null,-1);
     }
 }

@@ -24,6 +24,6 @@ public class DepositReorged {
 
 
     public DepositReorged() {
-        this(0, null);
+        this(-1, null);
     }
 }

@@ -8,6 +8,7 @@ import lombok.ToString;
 
 
 /**
+ * 모든 요청에 대한 Event 클래스 입니다.
  * JsonIgnoreProperties 어노테이션으로 요청 받지 않은 param 은 무시합니다.
  * 그렇기 때문에 어떤 서비스 로직의 Request 가 들어와도 상관 없습니다.
  */
@@ -18,7 +19,7 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestEvent {
 
-    //Response Event
+    //Request Event
     private final String tx_hash;
     private final String tx_id;
     private final String amount;

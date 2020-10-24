@@ -26,6 +26,6 @@ public class DepositConfirmed {
 
 
     public DepositConfirmed() {
-        this(null,null, 0,null);
+        this(null,null, -1,null);
     }
 }
