@@ -71,6 +71,8 @@
 
 
 ## Timeline
+- 10월 25일 (일)<br>
+
 - 10월 24일 (토)<br>
 Pagination 처리<br><br>
 updatedAtGte 을 설정하지 않고<br>
@@ -78,7 +80,7 @@ Recursive 로 조회 시 Stack overflow 발생 (당연히..ㅎㅎ)<br><br>
 @JsonProperty null 처리 에러 관련<br>
 prevUrl.equal(null)<br>
 prevUrl.isempty() 시 에러 발생 > 항상 false 이기 때문에..<br>
-prevUrl == null 로 변경<br>
+prevUrl == null 로 변경<br><br>
 
 
 - 10월 23일 (금)<br>
