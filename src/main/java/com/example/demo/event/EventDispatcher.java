@@ -1,13 +1,14 @@
 package com.example.demo.event;
 
-import com.example.demo.domain.DepositConfirmed;
-import com.example.demo.domain.DepositMined;
-import com.example.demo.domain.WithdrawConfirmed;
-import com.example.demo.domain.WithdrawPending;
+import com.example.demo.domain.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Rabbit MQ 메세지 전송자 관련 클래스입니다.
+ * 각 큐별 send method 를 달리해서 다른 정보를 보낼 수 있습니다.
+ */
 @Component
 public class EventDispatcher {
     private RabbitTemplate rabbitTemplate;
@@ -24,6 +25,15 @@ public class EventDispatcher {
                 depositMined
         );
     }
+
+    public void depositReorgedSend(final DepositReorged depositReorged, String exchange, String routingKey) {
+        rabbitTemplate.convertAndSend(
+                exchange,
+                routingKey,
+                depositReorged
+        );
+    }
+
     public void depositConfirmedSend(final DepositConfirmed depositConfirmed, String exchange, String routingKey){
         rabbitTemplate.convertAndSend(
                 exchange,
@@ -45,5 +55,6 @@ public class EventDispatcher {
                 withdrawConfirmed
         );
     }
+
 
 }

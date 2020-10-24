@@ -1,9 +1,7 @@
 package com.example.demo.event;
 
-import com.example.demo.domain.DepositConfirmed;
-import com.example.demo.domain.DepositMined;
-import com.example.demo.domain.WithdrawConfirmed;
-import com.example.demo.domain.WithdrawPending;
+import com.example.demo.controller.NotificationController;
+import com.example.demo.domain.*;
 import com.example.demo.service.MonitoringService;
 import com.example.demo.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,34 +9,55 @@ import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * RabbitLitenr 를 통해 Dispatcher 로 보낸 정보들을 실시간으로 받습니다.
+ * 큐 이름이 일치해야 하며 받은 정보를 보낼 클래스를 설정할 수 있습니다.
+ */
 @Slf4j
 @Component
 public class EventHandler {
 
     private MonitoringService monitoringService;
     private NotificationService notificationService;
+
+    private NotificationController controller;
+
     EventHandler(final MonitoringService monitoringService,
-                 final NotificationService notificationService){
+                 final NotificationService notificationService,
+                 final NotificationController controller){
         this.monitoringService = monitoringService;
         this.notificationService = notificationService;
+        this.controller = controller;
 
     }
-/*
+
     @RabbitListener(queues = "depositMinedQueue")
-    public void receivedMinedMessage(final DepositMined depositMined){
+    public void receivedDepositMinedMessage(final DepositMined depositMined){
 
         try{
-            notificationService.dm(depositMined);
+            controller.postDepositMinedTx(depositMined);
         } catch (final Exception e){
             log.error("Error ",e);
             throw new AmqpRejectAndDontRequeueException(e);
         }
     }
+    @RabbitListener(queues = "depositReorgedQueue")
+    public void receivedDepositReorgedMessage(final DepositReorged depositReorged){
+
+        try{
+            controller.postDepositReorgedTx(depositReorged);
+        } catch (final Exception e){
+            log.error("Error ",e);
+            throw new AmqpRejectAndDontRequeueException(e);
+        }
+    }
+
     @RabbitListener(queues = "depositConfirmedQueue")
     public void receivedDepositConfirmedMessage(final DepositConfirmed depositConfirmed){
 
         try{
-            notificationService.retrieveDepositConfirmedTx(depositConfirmed);
+            controller.postDepositConfirmTx(depositConfirmed);
         } catch (final Exception e){
             log.error("Error ",e);
             throw new AmqpRejectAndDontRequeueException(e);
@@ -48,7 +67,7 @@ public class EventHandler {
     public void receivedWithdrawPendingMessage(final WithdrawPending withdrawPending){
 
         try{
-            notificationService.retrieveWithdrawPendingTx(withdrawPending);
+            controller.postWithdrawPendingTx(withdrawPending);
         } catch (final Exception e){
             log.error("Error ",e);
             throw new AmqpRejectAndDontRequeueException(e);
@@ -58,11 +77,13 @@ public class EventHandler {
     public void receivedWithdrawConfirmedMessage(final WithdrawConfirmed withdrawConfirmed){
 
         try{
-            notificationService.retrieveWithdrawConfirmedTx(withdrawConfirmed);
+            controller.postWithdrawConfirmedTx(withdrawConfirmed);
         } catch (final Exception e){
             log.error("Error ",e);
             throw new AmqpRejectAndDontRequeueException(e);
         }
     }
-*/
+
+
+
 }
