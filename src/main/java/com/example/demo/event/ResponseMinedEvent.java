@@ -1,17 +1,20 @@
 package com.example.demo.event;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
+
+/**
+ * Deposit Mined 의 응답 Event 클래스 입니다.
+ */
 @RequiredArgsConstructor
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ResponseDepositMinedEvent {
+public class ResponseMinedEvent {
     private final int deposit_id;
 
-    public ResponseDepositMinedEvent() {
+    public ResponseMinedEvent() {
         this(-1);
     }
 
