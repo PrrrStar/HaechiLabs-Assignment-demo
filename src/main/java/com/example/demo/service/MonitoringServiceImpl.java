@@ -7,6 +7,7 @@ import com.example.demo.event.EventDispatcher;
 import com.example.demo.repository.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,12 +46,26 @@ public class MonitoringServiceImpl implements MonitoringService {
      * @return List<TransferEventResultDTO.Results>
      */
     @Override
-    public List<TransferEventResultDTO.Results> retrieveAllTxInfo()throws JsonProcessingException {
-        List<TransferEventResultDTO.Results> results = transferEventClient.retrieveTransferEventResultDTO().getResults();
-        results.stream().forEach(x->{
-            txDetector(x);
-        });
-        return results;
+    public ResponseEntity<TransferEventResultDTO> retrieveAllTxInfo(String url)throws JsonProcessingException {
+        ResponseEntity<TransferEventResultDTO> transferResults = transferEventClient.retrieveTransferResults(url);
+
+        String nextURL = transferResults.getBody().getPagination().getNextUrl();
+        List<TransferEventResultDTO.Results> results = transferResults.getBody().getResults();
+
+        results.forEach(this::txDetector);
+
+        /*
+        if (nextURL == null){
+            System.out.println("Exit");
+            return transferResults;
+        }else{
+            retrieveAllTxInfo(nextURL);
+            System.out.println(nextURL);
+        }
+
+         */
+        return transferResults;
+
     }
 
 
@@ -139,9 +154,9 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getWalletId()
         );
         if(!depositConfirmedRepository.findByDepositId(depositId).isPresent()){
-            System.out.println("Save Deposit Confirmed transaction... ");
+            //System.out.println("Save Deposit Confirmed transaction... ");
             depositConfirmedRepository.save(depositConfirmed);
-            System.out.println("Success...!");
+            //System.out.println("Success...!");
         }
         return depositConfirmed;
     }
@@ -177,9 +192,9 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getWalletId()
         );
         if(!withdrawConfirmedRepository.findByWithdrawId(withdrawId).isPresent()){
-            System.out.println("Save Withdraw Confirmed transaction... ");
+            //System.out.println("Save Withdraw Confirmed transaction... ");
             withdrawConfirmedRepository.save(withdrawConfirmed);
-            System.out.println("Success...!");
+           // System.out.println("Success...!");
 
         }
         return withdrawConfirmed;
