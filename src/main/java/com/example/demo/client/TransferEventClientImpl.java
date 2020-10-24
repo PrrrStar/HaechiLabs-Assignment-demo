@@ -15,7 +15,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  * 코인 입출금 내역과 REST로 연결하기 위한
  * TransferEventClient 인터페이스 구현체
  */
-
 @Component
 public class TransferEventClientImpl implements TransferEventClient{
 
@@ -32,15 +31,15 @@ public class TransferEventClientImpl implements TransferEventClient{
 
 
     /**
-     * 서버에서 호출한 결과를 ResponseEntity<TransferEventResultDTO.Results> 타입으로 반환합니다.
-     * @return ResponseEntity<TransferEventResultDTO.Results> response (ResponseEntity Type)
+     * Uri Components 를 이용해서 요청 Parameter 넣은 URI 를 생성합니다.
+     * 생성한 URI 를 Rest template 에 추가해서
+     * Configuration 에서 생성한 header 와 같이 exchange 한 뒤 그 결과를 반환합니다.
+     * @param url
+     * @param size
+     * @param page
+     * @param updatedAtGte
+     * @return ResponseEntity<TransferEventResultDTO> response
      */
-    public ResponseEntity<TransferEventResultDTO> retrieveTransferResults(String url) {
-
-        ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(url, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
-        return response;
-    }
-
     public ResponseEntity<TransferEventResultDTO> detectTransferEvent(String url, String size, String page, String updatedAtGte) {
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("page",page)
@@ -50,5 +49,19 @@ public class TransferEventClientImpl implements TransferEventClient{
         ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
         return response;
     }
+
+
+
+    /**
+     * 서버에서 호출한 결과를 ResponseEntity<TransferEventResultDTO.Results> 타입으로 반환합니다.
+     * @return ResponseEntity<TransferEventResultDTO.Results> response (ResponseEntity Type)
+     */
+    public ResponseEntity<TransferEventResultDTO> retrieveTransferResults(String url) {
+
+        ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(url, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
+        return response;
+    }
+
+
 
 }
