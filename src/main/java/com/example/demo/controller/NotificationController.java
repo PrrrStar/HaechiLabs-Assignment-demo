@@ -1,18 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.client.dto.TransferEventResultDTO;
-import com.example.demo.domain.DepositConfirmed;
-import com.example.demo.domain.WithdrawConfirmed;
-import com.example.demo.domain.WithdrawPending;
 import com.example.demo.event.RequestEvent;
 import com.example.demo.event.ResponseDepositMinedEvent;
 import com.example.demo.event.ResponseWithdrawPendingEvent;
 import com.example.demo.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 /**
@@ -24,23 +19,31 @@ public class NotificationController {
 
     private final MonitoringService monitoringService;
     private final NotificationService notificationService;
+    private final String valueTransferEventsHost;
 
     public NotificationController(final MonitoringService monitoringService,
-                                  final NotificationService notificationService){
+                                  final NotificationService notificationService,
+                                  @Value("${valueTransferEventsHost}") String valueTransferEventsHost){
         this.monitoringService = monitoringService;
         this.notificationService = notificationService;
+        this.valueTransferEventsHost =valueTransferEventsHost;
 
     }
 
+
+    private final String url = "http://localhost:3000/api/v2/eth/value-transfer-events";
+    private final String size = "50";
+    private final int page = 0;
+    private final String updatedAtGte = Long.toString(System.currentTimeMillis()-600000000);    //일주일 전 데이터 조회하기
+
     /**
      * 3초마다 전체정보 조회 후 모니터링 서비스를 실행한다.
-     * @return
      * @throws JsonProcessingException
      */
     @GetMapping("/")
-    @Scheduled(fixedDelay = 1000)
-    public List<TransferEventResultDTO.Results> getAllTx() throws JsonProcessingException {
-        return monitoringService.retrieveAllTxInfo();
+    @Scheduled(fixedDelay = 10000)
+    public void getAllTx() throws JsonProcessingException {
+        monitoringService.retrieveAllTxInfo(url, size, page, updatedAtGte);
     }
 
 
