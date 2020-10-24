@@ -1,14 +1,15 @@
 package com.example.demo.client;
 
 import com.example.demo.client.dto.TransferEventResultDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * 코인 입출금 내역과 REST로 연결하기 위한
@@ -21,49 +22,33 @@ public class TransferEventClientImpl implements TransferEventClient{
 
     private final RestTemplate restTemplate;
     private final HttpEntity<String> createHttpHeaders;
-    private final String valueTransferEventsHost;
 
     @Autowired
     public TransferEventClientImpl(final RestTemplate restTemplate,
-                                   final HttpEntity<String> createHttpHeaders,
-                                   @Value("${valueTransferEventsHost}") String valueTransferEventsHost){
+                                   final HttpEntity<String> createHttpHeaders){
         this.restTemplate = restTemplate;
         this.createHttpHeaders = createHttpHeaders;
-        this.valueTransferEventsHost = valueTransferEventsHost;
     }
 
-    /**
-     * DTO 와 ResponseEntity 를 매핑한 결과를 DTO 객체 타입으로 반환합니다.
-     * @return TransferEventResultDTO transferEventResultDTO (DTO Object Type)
-     * @throws JsonProcessingException
-     */
-    public TransferEventResultDTO retrieveTransferEventResultDTO() throws JsonProcessingException {
-
-        ResponseEntity<String> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, String.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        TransferEventResultDTO transferEventResultDTO = objectMapper.readValue(response.getBody(), TransferEventResultDTO.class);
-
-        return transferEventResultDTO;
-    }
 
     /**
      * 서버에서 호출한 결과를 ResponseEntity<TransferEventResultDTO.Results> 타입으로 반환합니다.
      * @return ResponseEntity<TransferEventResultDTO.Results> response (ResponseEntity Type)
      */
-    public ResponseEntity<TransferEventResultDTO.Results> retrieveTransferResults() {
+    public ResponseEntity<TransferEventResultDTO> retrieveTransferResults(String url) {
 
-        ResponseEntity<TransferEventResultDTO.Results> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.Results.class);
-
+        ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(url, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
         return response;
     }
 
-    /**
-     * 서버에서 호출한 페이징 결과를 ResponseEntity<TransferEventResultDTO.Pagination> 타입으로 반환합니다.
-     * @return ResponseEntity<TransferEventResultDTO.Pagination> response (ResponseEntity Type)
-     */
-    public ResponseEntity<TransferEventResultDTO.Pagination> retrievePagiantion(){
-        ResponseEntity<TransferEventResultDTO.Pagination> response = restTemplate.exchange(valueTransferEventsHost, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.Pagination.class);
-
+    public ResponseEntity<TransferEventResultDTO> detectTransferEvent(String url, String size, String page, String updatedAtGte) {
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("page",page)
+                .queryParam("size",size)
+                .queryParam("updatedAtGte",updatedAtGte)
+                .build(false);         //인코딩 False
+        System.out.println(builder);
+        ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
         return response;
     }
 
