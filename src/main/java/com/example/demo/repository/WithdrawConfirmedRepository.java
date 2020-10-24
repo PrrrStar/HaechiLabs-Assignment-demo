@@ -12,11 +12,13 @@ import java.util.Optional;
 public interface WithdrawConfirmedRepository extends JpaRepository<WithdrawConfirmed, Long> {
 
     /**
-     * walletId 로 입금 알람정보 가져오기
+     * walletId 로 출금 확인 정보 가져오기
      * @param withdrawId
      * @return
      */
     Optional<WithdrawConfirmed> findByWithdrawId(int withdrawId);
+
+
     List<WithdrawConfirmed> findAllByWithdrawId(int withdrawId);
     List<WithdrawConfirmed> findAllByWalletId(int walletId);
 

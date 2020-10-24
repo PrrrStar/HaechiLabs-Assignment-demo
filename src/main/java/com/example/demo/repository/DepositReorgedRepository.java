@@ -12,11 +12,13 @@ import java.util.Optional;
 public interface DepositReorgedRepository extends JpaRepository<DepositReorged, Long> {
 
     /**
-     * depositId 로 입금 알람정보 가져오기
+     * depositId 로 입금 Reorg 정보 가져오기
      * @param depositId
      * @return
      */
     Optional<DepositReorged> findByDepositId(int depositId);
+
+
     List<DepositReorged> findAllByDepositId(int depositId);
     List<DepositReorged> findAllByWalletId(int walletId);
 

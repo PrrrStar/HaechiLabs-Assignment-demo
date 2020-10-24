@@ -13,12 +13,19 @@ import java.util.Optional;
 public interface DepositMinedRepository extends JpaRepository<DepositMined, Long> {
 
     /**
-     * depositId 로 입금 알람정보 가져오기
+     * Transaction Hash 로 입금 Mined 정보 가져오기
+     * @param txHash
+     * @return
+     */
+    Optional<DepositMined> findByTxHash(String txHash);
+
+    /**
+     * depositId 로 입금 Mined 정보 가져오기
      * @param depositId
      * @return
      */
     Optional<DepositMined> findByDepositId(int depositId);
-    Optional<DepositMined> findByTxHash(String txHash);
+
     List<DepositMined> findAllByDepositId(int depositId);
     List<DepositMined> findAllByWalletId(int walletId);
 

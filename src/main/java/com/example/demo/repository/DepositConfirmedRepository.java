@@ -12,11 +12,13 @@ import java.util.Optional;
 public interface DepositConfirmedRepository extends JpaRepository<DepositConfirmed, Long> {
 
     /**
-     * depositId 로 입금 알람정보 가져오기
+     * depositId 로 입금 확인 정보 가져오기
      * @param depositId
      * @return
      */
     Optional<DepositConfirmed> findByDepositId(int depositId);
+
+
     List<DepositConfirmed> findAllByDepositId(int depositId);
     List<DepositConfirmed> findAllByWalletId(int walletId);
 
