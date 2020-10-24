@@ -5,7 +5,7 @@ import com.example.demo.client.dto.TransferEventResultDTO;
 import com.example.demo.domain.*;
 import com.example.demo.event.EventDispatcher;
 import com.example.demo.repository.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -76,46 +76,54 @@ public class MonitoringServiceImpl implements MonitoringService {
     private void txDetector(final TransferEventResultDTO.Results results){
 
         int eventId = results.getId();
+
+        //Deposit Mined Logic
         if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("MINED")){
-
-            //Deposit Mined Logic
             if(!depositMinedRepository.findByDepositId(eventId).isPresent()) {
-                saveDepositMinedByDepositId(results);
+                DepositMined request = saveDepositMinedByDepositId(results);
+                eventDispatcher.depositMindedSend(request, "notification_exchange","queue.depositMined");
             }
+        }
 
-            //Deposit Reorged Logic
-            //Mined 됐는데 Pending 에도 존재하고(같은 ID가 둘다 있다는 것은 MINED > PENDING 으로 바뀌었다.)
-            //Reorged 에 해당 ID가 없을때 저장한다.
-            if(depositMinedRepository.findByDepositId(eventId).isPresent()
-                    &&withdrawPendingRepository.findByWithdrawId(eventId).isPresent()
-                    &&!depositReorgedRepository.findByDepositId(eventId).isPresent()){
-                saveDepositReorgedByDepositId(results);
-            }
-
-            //eventDispatcher.depositMindedSend(depositMined, "notification_exchange","queue.depositMined");
+        //Deposit Reorged Logic
+        //Mined 됐는데 Pending 에도 존재하고(같은 ID가 둘다 있다는 것은 MINED > PENDING 으로 바뀌었다.)
+        //Reorged 에 해당 ID가 없을때 저장한다.
+        if(depositMinedRepository.findByDepositId(eventId).isPresent()
+                &&withdrawPendingRepository.findByWithdrawId(eventId).isPresent()
+                &&!depositReorgedRepository.findByDepositId(eventId).isPresent()){
+            DepositReorged request = saveDepositReorgedByDepositId(results);
+            eventDispatcher.depositReorgedSend(request, "notification_exchange","queue.depositReorged");
         }
 
         //Deposit Confirmed Logic
         if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("CONFIRMED")){
-            saveDepositConfirmedByDepositId(results, eventId);
-
+            if(!depositConfirmedRepository.findByDepositId(eventId).isPresent()){
+                DepositConfirmed request = saveDepositConfirmedByDepositId(results);
+                eventDispatcher.depositConfirmedSend(request, "notification_exchange","queue.depositConfirmed");
+            }
         }
 
         //Withdraw Pending Logic
         if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("PENDING")){
-            saveWithdrawPendingByWithdrawId(results, eventId);
+            if(!withdrawPendingRepository.findByWithdrawId(eventId).isPresent()) {
+                WithdrawPending request = saveWithdrawPendingByWithdrawId(results);
+                eventDispatcher.withdrawPendingSend(request, "notification_exchange","queue.withdrawPending");
+            }
 
         }
 
         //Withdraw Confirmed Logic
         if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("CONFIRMED")){
-            saveWithdrawConfirmedByWithdrawId(results, eventId);
-
+            if(!withdrawConfirmedRepository.findByWithdrawId(eventId).isPresent()) {
+                WithdrawConfirmed request = saveWithdrawConfirmedByWithdrawId(results);
+                eventDispatcher.withdrawConfirmedSend(request, "notification_exchange","queue.withdrawConfirmed");
+            }
         }
 
     }
 
     private DepositMined saveDepositMinedByDepositId(final TransferEventResultDTO.Results results){
+
         DepositMined depositMined = new DepositMined(
                 results.getTransactionHash(),
                 results.getAmount(),
@@ -125,9 +133,11 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getCoinSymbol(),
                 results.getId()
         );
+        System.out.println("==================================");
         System.out.println("Save Deposit Mined transaction... ");
         depositMinedRepository.save(depositMined);
         System.out.println("Success...!");
+        System.out.println("==================================");
         return depositMined;
     }
 
@@ -137,31 +147,32 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getId(),
                 results.getWalletId()
         );
+        System.out.println("====================================");
         System.out.println("Save Deposit Reorged transaction... ");
         depositReorgedRepository.save(depositReorged);
         System.out.println("Success...!");
+        System.out.println("====================================");
         return depositReorged;
     }
 
-    private DepositConfirmed saveDepositConfirmedByDepositId(final TransferEventResultDTO.Results results,
-                                                            final int depositId){
+    private DepositConfirmed saveDepositConfirmedByDepositId(final TransferEventResultDTO.Results results){
         DepositConfirmed depositConfirmed = new DepositConfirmed(
                 results.getTransactionId(),
                 results.getTransactionHash(),
                 results.getId(),
                 results.getWalletId()
         );
-        if(!depositConfirmedRepository.findByDepositId(depositId).isPresent()){
-            System.out.println("Save Deposit Confirmed transaction... ");
-            depositConfirmedRepository.save(depositConfirmed);
-            System.out.println("Success...!");
-        }
+        System.out.println("======================================");
+        System.out.println("Save Deposit Confirmed transaction... ");
+        depositConfirmedRepository.save(depositConfirmed);
+        System.out.println("Success...!");
+        System.out.println("======================================");
+
         return depositConfirmed;
     }
 
 
-    private WithdrawPending saveWithdrawPendingByWithdrawId(final TransferEventResultDTO.Results results,
-                                                          final int withdrawId){
+    private WithdrawPending saveWithdrawPendingByWithdrawId(final TransferEventResultDTO.Results results){
         WithdrawPending withdrawPending = new WithdrawPending(
                 results.getTransactionId(),
                 results.getAmount(),
@@ -171,30 +182,29 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getCoinSymbol(),
                 results.getId()
         );
-        if(!withdrawPendingRepository.findByWithdrawId(withdrawId).isPresent()){
-            System.out.println("Save Withdraw Pending transaction... ");
-            withdrawPendingRepository.save(withdrawPending);
-            System.out.println("Success...!");
-        }
+        System.out.println("=====================================");
+        System.out.println("Save Withdraw Pending transaction... ");
+        withdrawPendingRepository.save(withdrawPending);
+        System.out.println("Success...!");
+        System.out.println("======================================");
         return withdrawPending;
     }
 
 
 
-    private WithdrawConfirmed saveWithdrawConfirmedByWithdrawId(final TransferEventResultDTO.Results results,
-                                                            final int withdrawId){
-        WithdrawConfirmed withdrawConfirmed = new WithdrawConfirmed(
+    private WithdrawConfirmed saveWithdrawConfirmedByWithdrawId(final TransferEventResultDTO.Results results){
+         WithdrawConfirmed withdrawConfirmed = new WithdrawConfirmed(
                 results.getTransactionId(),
                 results.getTransactionHash(),
                 results.getId(),
                 results.getWalletId()
         );
-        if(!withdrawConfirmedRepository.findByWithdrawId(withdrawId).isPresent()){
-            System.out.println("Save Withdraw Confirmed transaction... ");
-            withdrawConfirmedRepository.save(withdrawConfirmed);
-            System.out.println("Success...!");
+        System.out.println("=======================================");
+        System.out.println("Save Withdraw Confirmed transaction... ");
+        withdrawConfirmedRepository.save(withdrawConfirmed);
+        System.out.println("Success...!");
+        System.out.println("=======================================");
 
-        }
         return withdrawConfirmed;
     }
 
