@@ -39,6 +39,7 @@ public class NotificationServiceImpl implements NotificationService{
             response = new ResponseDepositMinedEvent(
                     depositMinedTx.get().getDepositId()
             );
+            System.out.println("\nResponse : "+ response);
         }
         System.out.println("\nResponse : "+ response);
         return response;

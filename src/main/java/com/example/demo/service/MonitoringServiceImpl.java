@@ -45,27 +45,25 @@ public class MonitoringServiceImpl implements MonitoringService {
      * 전체 트랜잭션 정보 조회
      * @return List<TransferEventResultDTO.Results>
      */
+
+
     @Override
-    public ResponseEntity<TransferEventResultDTO> retrieveAllTxInfo(String url)throws JsonProcessingException {
-        ResponseEntity<TransferEventResultDTO> transferResults = transferEventClient.retrieveTransferResults(url);
+    public List<TransferEventResultDTO.Results> retrieveTransactionInfo(String url, String size, int page, String updatedAtGte){
+        ResponseEntity<TransferEventResultDTO> transferResults = transferEventClient.detectTransferEvent(url, size, Long.toString(page), updatedAtGte);
 
         String nextURL = transferResults.getBody().getPagination().getNextUrl();
         List<TransferEventResultDTO.Results> results = transferResults.getBody().getResults();
 
         results.forEach(this::txDetector);
 
-        /*
+
         if (nextURL == null){
-            System.out.println("Exit");
-            return transferResults;
-        }else{
-            retrieveAllTxInfo(nextURL);
-            System.out.println(nextURL);
+            return results;
         }
-
-         */
-        return transferResults;
-
+        else {
+            retrieveTransactionInfo(url, size, page+1, updatedAtGte);
+        }
+        return results;
     }
 
 
@@ -154,9 +152,9 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getWalletId()
         );
         if(!depositConfirmedRepository.findByDepositId(depositId).isPresent()){
-            //System.out.println("Save Deposit Confirmed transaction... ");
+            System.out.println("Save Deposit Confirmed transaction... ");
             depositConfirmedRepository.save(depositConfirmed);
-            //System.out.println("Success...!");
+            System.out.println("Success...!");
         }
         return depositConfirmed;
     }
@@ -192,9 +190,9 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getWalletId()
         );
         if(!withdrawConfirmedRepository.findByWithdrawId(withdrawId).isPresent()){
-            //System.out.println("Save Withdraw Confirmed transaction... ");
+            System.out.println("Save Withdraw Confirmed transaction... ");
             withdrawConfirmedRepository.save(withdrawConfirmed);
-           // System.out.println("Success...!");
+            System.out.println("Success...!");
 
         }
         return withdrawConfirmed;
