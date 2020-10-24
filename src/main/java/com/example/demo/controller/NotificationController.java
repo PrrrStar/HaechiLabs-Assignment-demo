@@ -1,17 +1,16 @@
 package com.example.demo.controller;
 
-import com.example.demo.event.RequestEvent;
-import com.example.demo.event.ResponseDepositMinedEvent;
-import com.example.demo.event.ResponseWithdrawPendingEvent;
+import com.example.demo.domain.*;
+import com.example.demo.event.ResponseMinedEvent;
+import com.example.demo.event.ResponsePendingEvent;
 import com.example.demo.service.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 
 /**
- * DepositMined Service 의 REST API
+ * 알림 어플리케이션의 컨트롤러입니다.
  */
 @RestController
 @RequestMapping("/notifications")
@@ -29,23 +28,27 @@ public class NotificationController {
         this.valueTransferEventsHost =valueTransferEventsHost;
 
     }
-    private final String url = "http://localhost:3000/api/v2/eth/value-transfer-events";
+
+
+    /**
+     * 정보를 Tracking 할 때 필요한 Request URL Components 입니다. Client 에서 위 값들을 build 해줍니다.
+     */
     private final String size = "50";
     private final int page = 0;
-    private final String updatedAtGte = Long.toString(System.currentTimeMillis()-600000);    //10분 전 데이터 조회하기
+    private final String walletId = "";
+    private final String updatedAtGte = Long.toString(System.currentTimeMillis()-600000);    // 10분 전 데이터 조회하기
 
     private int idx = 0;
+
     /**
-     * 3초마다 전체정보 조회 후 모니터링 서비스를 실행한다.
-     * @throws JsonProcessingException
+     * 1초마다 value-transfer-event 를 Hooking 한 후 모니터링 서비스를 실행합니다.
      */
     @GetMapping("/")
     @Scheduled(fixedDelay = 1000)
     public void getTransactionInfo() {
 
-
         Long start_time = System.currentTimeMillis();
-        monitoringService.retrieveTransactionInfo(url, size, page, updatedAtGte);
+        monitoringService.retrieveTransactionInfo(valueTransferEventsHost, size, page, updatedAtGte);
         Long end_time = System.currentTimeMillis();
 
         System.out.println("No. "+idx+", Run-Time : "+(end_time-start_time)+"ms");
@@ -55,24 +58,24 @@ public class NotificationController {
 
 
     @PostMapping("/deposit_mined")
-    public ResponseDepositMinedEvent postDepositMinedTx(@RequestBody RequestEvent requestEvent){
-        return notificationService.retrieveDepositMinedTx(requestEvent);
+    public ResponseMinedEvent postDepositMinedTx(@RequestBody DepositMined depositMined){
+        return notificationService.retrieveDepositMinedTx(depositMined);
     }
     @PostMapping("/deposit_reorged")
-    public void postDepositReorgedTx(@RequestBody RequestEvent requestEvent) {
-        notificationService.retrieveDepositReorgedTx(requestEvent);
+    public void postDepositReorgedTx(@RequestBody DepositReorged depositReorged) {
+        notificationService.retrieveDepositReorgedTx(depositReorged);
     }
     @PostMapping("/deposit_confirm")
-    public void postDepositConfirmTx(@RequestBody RequestEvent requestEvent){
-        notificationService.retrieveDepositConfirmedTx(requestEvent);
+    public void postDepositConfirmTx(@RequestBody DepositConfirmed depositConfirmed){
+        notificationService.retrieveDepositConfirmedTx(depositConfirmed);
     }
     @PostMapping("/withdraw_pending")
-    public ResponseWithdrawPendingEvent postWithdrawPendingTx(@RequestBody RequestEvent requestEvent){
-        return notificationService.retrieveWithdrawPendingTx(requestEvent);
+    public ResponsePendingEvent postWithdrawPendingTx(@RequestBody WithdrawPending withdrawPending){
+        return notificationService.retrieveWithdrawPendingTx(withdrawPending);
     }
     @PostMapping("/withdraw_confirmed")
-    public void postWithdrawConfirmedTx(@RequestBody RequestEvent requestEvent){
-        notificationService.retrieveWithdrawConfirmedTx(requestEvent);
+    public void postWithdrawConfirmedTx(@RequestBody WithdrawConfirmed withdrawConfirmed){
+        notificationService.retrieveWithdrawConfirmedTx(withdrawConfirmed);
     }
 
 
