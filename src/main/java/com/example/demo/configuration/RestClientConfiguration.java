@@ -15,6 +15,7 @@ public class RestClientConfiguration {
     private final String xHenesisSecret;
     private final String authorization;
 
+
     public RestClientConfiguration(@Value("${xHenesisSecret}") final String xHenesisSecret,
                                    @Value("${authorization}") final String authorization) {
         this.xHenesisSecret = xHenesisSecret;
@@ -32,10 +33,9 @@ public class RestClientConfiguration {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("X-Henesis-Secret", xHenesisSecret);
         headers.add("Authorization", authorization);
-        HttpEntity<String> httpHeader = new HttpEntity<>(headers);
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
 
-        return httpHeader;
-
+        return httpEntity;
     }
 
     /**
