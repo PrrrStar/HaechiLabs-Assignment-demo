@@ -27,10 +27,17 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
     }
 
 
-
+    /**
+     * 서비스에 해당하는 큐를 생성합니다.
+     * durable = true 이면 서버가 down 되도 queue 값에 데이터를 보존합니다.
+     */
     @Bean
     Queue depositMinedQueue(){
         return new Queue("depositMinedQueue", false);
+    }
+    @Bean
+    Queue depositReorgedQueue(){
+        return new Queue("depositReorgedQueue", false);
     }
     @Bean
     Queue depositConfirmedQueue(){
@@ -50,10 +57,20 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
     }
 
 
+    /**
+     * 각각의 큐를 바인딩합니다.
+     * 메세지를 Send 할 때, queue name 과 routingKey 가 같아야 합니다.
+     * topic 방식으로 유연하게 바인딩할 수 있습니다.
+     */
     @Bean
     Binding depositMinedBinding(final Queue depositMinedQueue,
                     final TopicExchange exchange){
         return BindingBuilder.bind(depositMinedQueue).to(exchange).with("queue.depositMined");
+    }
+    @Bean
+    Binding depositReorgedBinding(final Queue depositReorgedQueue,
+                                final TopicExchange exchange){
+        return BindingBuilder.bind(depositReorgedQueue).to(exchange).with("queue.depositReorged");
     }
     @Bean
     Binding depositConfirmedBinding(final Queue depositConfirmedQueue,
