@@ -161,11 +161,11 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getCoinSymbol(),
                 results.getId()
         );
-        System.out.println("==================================");
+        System.out.println("\n==================================");
         System.out.println("Save Deposit Mined transaction... ");
         depositMinedRepository.save(depositMined);
         System.out.println("Success...!");
-        System.out.println("==================================");
+        System.out.println("==================================\n");
         return depositMined;
     }
 
@@ -175,11 +175,11 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getId(),
                 results.getWalletId()
         );
-        System.out.println("====================================");
+        System.out.println("\n====================================");
         System.out.println("Save Deposit Reorged transaction... ");
         depositReorgedRepository.save(depositReorged);
         System.out.println("Success...!");
-        System.out.println("====================================");
+        System.out.println("====================================\n");
         return depositReorged;
     }
 
@@ -190,11 +190,11 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getId(),
                 results.getWalletId()
         );
-        System.out.println("======================================");
+        System.out.println("\n======================================");
         System.out.println("Save Deposit Confirmed transaction... ");
         depositConfirmedRepository.save(depositConfirmed);
         System.out.println("Success...!");
-        System.out.println("======================================");
+        System.out.println("======================================\n");
 
         return depositConfirmed;
     }
@@ -210,11 +210,11 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getCoinSymbol(),
                 results.getId()
         );
-        System.out.println("=====================================");
+        System.out.println("\n=====================================");
         System.out.println("Save Withdraw Pending transaction... ");
         withdrawPendingRepository.save(withdrawPending);
         System.out.println("Success...!");
-        System.out.println("======================================");
+        System.out.println("======================================\n");
         return withdrawPending;
     }
 
@@ -227,11 +227,11 @@ public class MonitoringServiceImpl implements MonitoringService {
                 results.getId(),
                 results.getWalletId()
         );
-        System.out.println("=======================================");
+        System.out.println("\n=======================================");
         System.out.println("Save Withdraw Confirmed transaction... ");
         withdrawConfirmedRepository.save(withdrawConfirmed);
         System.out.println("Success...!");
-        System.out.println("=======================================");
+        System.out.println("=======================================\n");
 
         return withdrawConfirmed;
     }

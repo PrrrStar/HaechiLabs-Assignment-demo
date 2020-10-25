@@ -40,30 +40,31 @@ public class NotificationServiceImpl implements NotificationService{
             response = new ResponseMinedEvent(
                     depositMinedTx.get().getDepositId()
             );
-            System.out.println("======================================");
+            System.out.println("");
+            System.out.println("\n======================================");
             System.out.println("Response Deposit Mined");
             System.out.println(response);
-            System.out.println("======================================");
+            System.out.println("======================================\n");
         }
         return response;
     }
 
     @Override
     public void retrieveDepositReorgedTx(DepositReorged depositReorged){
-        System.out.println("======================================");
+        System.out.println("\n======================================");
         System.out.println("Deposit Reorged Information");
         System.out.println(depositReorged);
-        System.out.println("======================================");
+        System.out.println("======================================\n");
 
     }
 
 
     @Override
     public void retrieveDepositConfirmedTx(DepositConfirmed depositConfirmed) {
-        System.out.println("======================================");
+        System.out.println("\n======================================");
         System.out.println("Deposit Confirmed Information");
         System.out.println(depositConfirmed);
-        System.out.println("======================================");
+        System.out.println("======================================\n");
     }
 
     /**
@@ -80,20 +81,20 @@ public class NotificationServiceImpl implements NotificationService{
             response = new ResponsePendingEvent(
                     withdrawPendingTx.get().getWithdrawId()
             );
-            System.out.println("======================================");
+            System.out.println("\n======================================");
             System.out.println("Response Withdraw Pending");
             System.out.println(response);
-            System.out.println("======================================");
+            System.out.println("======================================\n");
         }
         return response;
     }
 
     @Override
     public void retrieveWithdrawConfirmedTx(WithdrawConfirmed withdrawConfirmed) {
-        System.out.println("======================================");
-        System.out.println("Deposit Confirmed Information");
+        System.out.println("\n======================================");
+        System.out.println("Withdraw Confirmed Information");
         System.out.println(withdrawConfirmed);
-        System.out.println("======================================");
+        System.out.println("======================================\n");
 
     }
 }
