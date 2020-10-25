@@ -45,24 +45,29 @@ public class MonitoringServiceImpl implements MonitoringService {
      * 전체 트랜잭션 정보 모니터링 조회
      * @return List<TransferEventResultDTO.Results>
      */
-
     @Override
-    public List<TransferEventResultDTO.Results> retrieveTransactionInfo(String url, String size, int page, String updatedAtGte){
-        ResponseEntity<TransferEventResultDTO> transferResults = transferEventClient.detectTransferEvent(url, size, Long.toString(page), updatedAtGte);
+    public List<TransferEventResultDTO.Results> retrieveTransactionInfo(String url,
+                                                                        String size,
+                                                                        int page,
+                                                                        String status,
+                                                                        String walletId,
+                                                                        String masterWalletId,
+                                                                        String updatedAtGte){
+
+        ResponseEntity<TransferEventResultDTO> transferResults = transferEventClient.detectTransferEvent(url, size, Long.toString(page), status, walletId, masterWalletId, updatedAtGte);
 
         String nextURL = transferResults.getBody().getPagination().getNextUrl();
         List<TransferEventResultDTO.Results> results = transferResults.getBody().getResults();
 
         // txDetector 는 각 Transaction status, transfer type 을 감지하고 Entity에 save 한다.
         results.forEach(this::txDetector);
-
-
+        
         // 다음 페이지가 없으면 Recursive 탈출
         if (nextURL == null){
             return results;
         }
         else {
-            retrieveTransactionInfo(url, size, page+1, updatedAtGte);
+            retrieveTransactionInfo(url, size, page+1, status, walletId, masterWalletId,updatedAtGte);
         }
         return results;
     }

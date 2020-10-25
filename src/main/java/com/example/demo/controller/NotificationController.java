@@ -33,10 +33,11 @@ public class NotificationController {
     /**
      * 정보를 Tracking 할 때 필요한 Request URL Components 입니다. Client 에서 위 값들을 build 해줍니다.
      */
-    private final String walletId = "";
     private final String size = "50";
-    private final String status = "";
     private final int page = 0;
+    private final String status = "";
+    private final String walletId = "";
+    private final String masterWalletId ="";
     private final String updatedAtGte = Long.toString(System.currentTimeMillis()-600000);    // 10분 전 데이터 조회하기
 
     private int idx = 0;
@@ -49,7 +50,7 @@ public class NotificationController {
     public void getTransactionInfo() {
 
         Long start_time = System.currentTimeMillis();
-        monitoringService.retrieveTransactionInfo(valueTransferEventsHost, size, page, updatedAtGte);
+        monitoringService.retrieveTransactionInfo(valueTransferEventsHost, size, page, status, walletId, masterWalletId, updatedAtGte);
         Long end_time = System.currentTimeMillis();
 
         System.out.println("No. "+idx+", Run-Time : "+(end_time-start_time)+"ms");

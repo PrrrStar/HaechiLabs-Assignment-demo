@@ -15,5 +15,11 @@ public interface MonitoringService {
      * 모든 트랜잭션 조회
      * @return
      */
-    List<TransferEventResultDTO.Results> retrieveTransactionInfo(String url, String size, int page, String updatedAtGte);
+    List<TransferEventResultDTO.Results> retrieveTransactionInfo(String url,
+                                                                 String size,
+                                                                 int page,
+                                                                 String status,
+                                                                 String walletId,
+                                                                 String masterWalletId,
+                                                                 String updatedAtGte);
 }

@@ -11,5 +11,11 @@ public interface TransferEventClient {
 
 
     ResponseEntity<TransferEventResultDTO> retrieveTransferResults(String url) throws JsonProcessingException;
-    ResponseEntity<TransferEventResultDTO> detectTransferEvent(String url, String size, String page, String updatedAtGre);
+    ResponseEntity<TransferEventResultDTO> detectTransferEvent(String url,
+                                                               String size,
+                                                               String page,
+                                                               String status,
+                                                               String walletId,
+                                                               String masterWalletId,
+                                                               String updatedAtGte);
 }

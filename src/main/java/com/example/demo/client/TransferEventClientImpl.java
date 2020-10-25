@@ -43,11 +43,18 @@ public class TransferEventClientImpl implements TransferEventClient{
     public ResponseEntity<TransferEventResultDTO> detectTransferEvent(String url,
                                                                       String size,
                                                                       String page,
+                                                                      String status,
+                                                                      String walletId,
+                                                                      String masterWalletId,
                                                                       String updatedAtGte) {
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("page",page)
                 .queryParam("size",size)
+                .queryParam("page",page)
+                .queryParam("status",status)
+                .queryParam("walletId",walletId)
+                .queryParam("masterWalletId",masterWalletId)
                 .queryParam("updatedAtGte",updatedAtGte)
+
                 .build(false);         //인코딩 False
         ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
         return response;
