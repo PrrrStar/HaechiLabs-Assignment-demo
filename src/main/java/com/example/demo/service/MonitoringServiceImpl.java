@@ -59,14 +59,14 @@ public class MonitoringServiceImpl implements MonitoringService {
         String nextURL = transferResults.getBody().getPagination().getNextUrl();
         List<TransferEventResultDTO.Results> results = transferResults.getBody().getResults();
 
-        // txDetector 는 각 Transaction status, transfer type 을 감지하고 Entity에 save 한다.
+        // txDetector 는 각 Transaction status, transfer type 을 감지하고 Entity 에 save 한다.
         results.forEach(this::txDetector);
 
         // 다음 페이지가 없으면 Recursive 탈출
         if (nextURL == null){
             return results;
-        }
-        else {
+        }else {
+            // page+1 을 한 뒤 URI 요청을 보냅니다.
             retrieveTransactionInfo(url, size, page+1, status, walletId, masterWalletId,updatedAtGte);
         }
         return results;
@@ -83,52 +83,65 @@ public class MonitoringServiceImpl implements MonitoringService {
 
         int eventId = results.getId();
 
-        //Deposit Mined Logic
-        if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("MINED")){
-            // id 가 존재하지 않으면 저장한다.
-            if(!depositMinedRepository.findByDepositId(eventId).isPresent()) {
-                DepositMined request = saveDepositMinedByDepositId(results);
 
-                // 저장한 값을 depositMined Queue 로 보낸다.
-                eventDispatcher.depositMindedSend(request, "notification_exchange","queue.depositMined");
+        // Deposit Logic
+        if (results.getTransferType().contains("DEPOSIT")){
+
+            // Deposit Mined Logic
+            // Deposit 에서 Transaction Status 가 MINED 인 경우,
+            if (results.getStatus().contains("MINED")){
+                // id 가 존재하지 않으면 저장한다.
+                if(!depositMinedRepository.findByDepositId(eventId).isPresent()) {
+                    DepositMined request = saveDepositMinedByDepositId(results);
+
+                    // 저장한 값을 depositMined Queue 로 보낸다.
+                    eventDispatcher.depositMindedSend(request, "notification_exchange","queue.depositMined");
+                }
+            }
+
+            // Deposit Reorged Logic
+            // Deposit 에서 Transaction Status 가 PENDING or REPLACED 인 경우,
+            if (results.getStatus().contains("PENDING")||results.getStatus().contains("REPLACED")) {
+                // MINED 에 해당 ID 가 있고 Reorged 에는 없을 경우 저장한다.
+                if (depositMinedRepository.findByDepositId(eventId).isPresent()
+                        && !depositReorgedRepository.findByDepositId(eventId).isPresent()) {
+                    DepositReorged request = saveDepositReorgedByDepositId(results);
+                    eventDispatcher.depositReorgedSend(request, "notification_exchange", "queue.depositReorged");
+                }
+            }
+
+            // Deposit Confirmed Logic
+            // Deposit 에서 Transaction Status 가 CONFIRMED 인 경우,
+            if (results.getStatus().contains("CONFIRMED")){
+                if(!depositConfirmedRepository.findByDepositId(eventId).isPresent()){
+                    DepositConfirmed request = saveDepositConfirmedByDepositId(results);
+                    eventDispatcher.depositConfirmedSend(request, "notification_exchange","queue.depositConfirmed");
+                }
             }
         }
 
-        //Deposit Reorged Logic
-        //Mined 됐는데 Pending 에도 존재하고(같은 ID가 둘다 있다는 것은 MINED > PENDING 으로 바뀌었다.)
-        //Reorged 에 해당 ID가 없을때 저장한다.
-        if(depositMinedRepository.findByDepositId(eventId).isPresent()
-                &&withdrawPendingRepository.findByWithdrawId(eventId).isPresent()
-                &&!depositReorgedRepository.findByDepositId(eventId).isPresent()){
-            DepositReorged request = saveDepositReorgedByDepositId(results);
-            eventDispatcher.depositReorgedSend(request, "notification_exchange","queue.depositReorged");
-        }
 
-        //Deposit Confirmed Logic
-        if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("CONFIRMED")){
-            if(!depositConfirmedRepository.findByDepositId(eventId).isPresent()){
-                DepositConfirmed request = saveDepositConfirmedByDepositId(results);
-                eventDispatcher.depositConfirmedSend(request, "notification_exchange","queue.depositConfirmed");
-            }
-        }
+        // Withdraw Logic
+        if (results.getTransferType().contains("WITHDRAWAL")){
 
-        //Withdraw Pending Logic
-        if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("PENDING")){
-            if(!withdrawPendingRepository.findByWithdrawId(eventId).isPresent()) {
-                WithdrawPending request = saveWithdrawPendingByWithdrawId(results);
-                eventDispatcher.withdrawPendingSend(request, "notification_exchange","queue.withdrawPending");
+            // Withdraw Pending Logic
+            // Withdraw 에서 Transaction Status 가 PENDING 인 경우,
+            if (results.getStatus().contains("PENDING")){
+                if(!withdrawPendingRepository.findByWithdrawId(eventId).isPresent()) {
+                    WithdrawPending request = saveWithdrawPendingByWithdrawId(results);
+                    eventDispatcher.withdrawPendingSend(request, "notification_exchange","queue.withdrawPending");
+                }
             }
 
-        }
-
-        //Withdraw Confirmed Logic
-        if (results.getTransferType().contains("WITHDRAWAL") && results.getStatus().contains("CONFIRMED")){
-            if(!withdrawConfirmedRepository.findByWithdrawId(eventId).isPresent()) {
-                WithdrawConfirmed request = saveWithdrawConfirmedByWithdrawId(results);
-                eventDispatcher.withdrawConfirmedSend(request, "notification_exchange","queue.withdrawConfirmed");
+            // Withdraw Confirmed Logic
+            // Withdraw 에서 Transaction Status 가 CONFIRMED 인 경우,
+            if (results.getStatus().contains("CONFIRMED")){
+                if(!withdrawConfirmedRepository.findByWithdrawId(eventId).isPresent()) {
+                    WithdrawConfirmed request = saveWithdrawConfirmedByWithdrawId(results);
+                    eventDispatcher.withdrawConfirmedSend(request, "notification_exchange","queue.withdrawConfirmed");
+                }
             }
         }
-
     }
 
 
