@@ -18,8 +18,10 @@ public class DepositReorged {
     private Long id;
 
     //Request
+    @Column(name = "deposit_id")
     private final int depositId;
 
+    @Column(name = "wallet_id")
     private final String walletId;
 
 

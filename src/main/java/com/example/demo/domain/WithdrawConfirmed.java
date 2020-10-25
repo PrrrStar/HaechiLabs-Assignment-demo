@@ -18,10 +18,16 @@ public class WithdrawConfirmed {
     private Long id;
 
     //Request
+    @Column(name = "tx_id")
     private final String txId;
+
+    @Column(name = "tx_hash")
     private final String txHash;
+
+    @Column(name = "withdraw_id")
     private final int withdrawId;
 
+    @Column(name = "wallet_id")
     private final String walletId;
 
 
