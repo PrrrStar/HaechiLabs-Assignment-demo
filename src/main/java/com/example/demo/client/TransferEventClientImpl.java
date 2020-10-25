@@ -40,7 +40,10 @@ public class TransferEventClientImpl implements TransferEventClient{
      * @param updatedAtGte
      * @return ResponseEntity<TransferEventResultDTO> response
      */
-    public ResponseEntity<TransferEventResultDTO> detectTransferEvent(String url, String size, String page, String updatedAtGte) {
+    public ResponseEntity<TransferEventResultDTO> detectTransferEvent(String url,
+                                                                      String size,
+                                                                      String page,
+                                                                      String updatedAtGte) {
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("page",page)
                 .queryParam("size",size)

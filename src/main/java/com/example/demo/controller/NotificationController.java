@@ -33,15 +33,16 @@ public class NotificationController {
     /**
      * 정보를 Tracking 할 때 필요한 Request URL Components 입니다. Client 에서 위 값들을 build 해줍니다.
      */
-    private final String size = "50";
-    private final int page = 0;
     private final String walletId = "";
+    private final String size = "50";
+    private final String status = "";
+    private final int page = 0;
     private final String updatedAtGte = Long.toString(System.currentTimeMillis()-600000);    // 10분 전 데이터 조회하기
 
     private int idx = 0;
 
     /**
-     * 1초마다 value-transfer-event 를 Hooking 한 후 모니터링 서비스를 실행합니다.
+     * 1초마다 value-transfer-event api 서버를 Hooking 한 후 모니터링 서비스를 실행합니다.
      */
     @GetMapping("/")
     @Scheduled(fixedDelay = 1000)
