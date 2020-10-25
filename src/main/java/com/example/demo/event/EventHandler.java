@@ -32,6 +32,11 @@ public class EventHandler {
 
     }
 
+    /**
+     * depositMinedQueue 로 넘어온 데이터를 Listen 합니다.
+     * 그 후 controller 의 postDepositMinedTx 매서드에 그 값을 전달합니다.
+     * @param depositMined
+     */
     @RabbitListener(queues = "depositMinedQueue")
     public void receivedDepositMinedMessage(final DepositMined depositMined){
 

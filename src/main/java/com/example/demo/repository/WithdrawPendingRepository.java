@@ -19,7 +19,6 @@ public interface WithdrawPendingRepository extends JpaRepository<WithdrawPending
      */
     Optional<WithdrawPending> findByTxId(String txId);
 
-
     /**
      * walletId 로 입금 알람정보 가져오기
      * @param withdrawId

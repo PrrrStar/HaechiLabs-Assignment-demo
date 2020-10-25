@@ -42,10 +42,9 @@ public class MonitoringServiceImpl implements MonitoringService {
     }
 
     /**
-     * 전체 트랜잭션 정보 조회
+     * 전체 트랜잭션 정보 모니터링 조회
      * @return List<TransferEventResultDTO.Results>
      */
-
 
     @Override
     public List<TransferEventResultDTO.Results> retrieveTransactionInfo(String url, String size, int page, String updatedAtGte){
@@ -54,9 +53,11 @@ public class MonitoringServiceImpl implements MonitoringService {
         String nextURL = transferResults.getBody().getPagination().getNextUrl();
         List<TransferEventResultDTO.Results> results = transferResults.getBody().getResults();
 
+        // txDetector 는 각 Transaction status, transfer type 을 감지하고 Entity에 save 한다.
         results.forEach(this::txDetector);
 
 
+        // 다음 페이지가 없으면 Recursive 탈출
         if (nextURL == null){
             return results;
         }
@@ -79,8 +80,11 @@ public class MonitoringServiceImpl implements MonitoringService {
 
         //Deposit Mined Logic
         if (results.getTransferType().contains("DEPOSIT") && results.getStatus().contains("MINED")){
+            // id 가 존재하지 않으면 저장한다.
             if(!depositMinedRepository.findByDepositId(eventId).isPresent()) {
                 DepositMined request = saveDepositMinedByDepositId(results);
+
+                // 저장한 값을 depositMined Queue 로 보낸다.
                 eventDispatcher.depositMindedSend(request, "notification_exchange","queue.depositMined");
             }
         }
@@ -122,6 +126,12 @@ public class MonitoringServiceImpl implements MonitoringService {
 
     }
 
+
+    /**
+     * 채굴된 트랜잭션 정보를 저장하는 메서드
+     * @param results
+     * @return 저장된 객체 정보를 return 합니다.
+     */
     private DepositMined saveDepositMinedByDepositId(final TransferEventResultDTO.Results results){
 
         DepositMined depositMined = new DepositMined(
