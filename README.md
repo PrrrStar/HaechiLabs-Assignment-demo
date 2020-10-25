@@ -87,21 +87,38 @@ authorization=
 ```
 
 ## Problem
+- @Scheduled 와 Recursive 로직이 구현된 Method 가 충돌을 일으켜 <br>
+데이터를 Tracking 할 수 없는 상황 발생<br>
+
+- JPA 에서 snake_case 는 인식하지 못함. <br>
+그로 인해 JSON 의 Key 값이 camelCase 로 구성됨.<br>
+ex) findByTx_id => 언더바(_)를 인식하지 못함.<br>
+ 
+- URIComponents 에서 masterWalletId나 walletId 맵핑한 URI 로 <br>
+조건을 만족하는 데이터를 가져오지 못함.<br>
+String Type 의 Encoding 문제가 아닐까 의심중<br>
+
 - Queue 의 Durable = True 했을 때 <br>
 ```PRECONDITION_FAILED - inequivalent arg 'durable' for queue```
 에러 발생. <br> 
 -> 이미 durable queue 로써 존재하다는 뜻.
 
-- page 가 많을 경우 Recursive Depth 가 깊어짐에 따라
-Time complexity 가 급격하게 증가. > 알고리즘 개션 필요.
-
-- 1초 안에 Transaction 상태가 변할 경우, 혹은 target API 서버(value-transfer-events) 가 다운 되었을 경우<br>
+- 1초 안에 Transaction 상태가 여러번 변할 경우,<br>
+혹은 target API 서버(value-transfer-events) 가 다운 되었을 경우<br>
 해당 트랜잭션의 변화를 저장할 수 없음.
 
 ## Solution
-- 구체적으로 durable queue를 지정할 필요가 있다.
-- Mass Transit 을 non-durable 로 다시 생성하도록 해야함.
+- Time Complexity 문제<br>
+page 가 많을 경우 Recursive Depth 가 깊어짐에 따라<br>
+Time complexity 가 급격하게 증가. > 알고리즘 개션 필요.<br>
 
+- camelCase 문제 <br>
+ORM 을 바꾸거나 @Query 어노테이션을 이용
+
+- Queue Durable 문제 <br>
+구체적으로 durable queue를 지정할 필요가 있다.<br>
+Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
+ 
 ## Impression
  > 이제는 Java 와 Spring에 조금 익숙해 졌지만 적응하는 데 꽤 오래 걸린 것 같습니다.
  과제을 하면서 점점 공부할 심화 내용이 늘어가고 자료는 점점 줄었습니다.

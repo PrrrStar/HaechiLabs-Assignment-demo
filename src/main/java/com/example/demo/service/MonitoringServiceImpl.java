@@ -61,7 +61,7 @@ public class MonitoringServiceImpl implements MonitoringService {
 
         // txDetector 는 각 Transaction status, transfer type 을 감지하고 Entity에 save 한다.
         results.forEach(this::txDetector);
-        
+
         // 다음 페이지가 없으면 Recursive 탈출
         if (nextURL == null){
             return results;
