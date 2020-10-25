@@ -24,8 +24,8 @@
             ┗━ TransferEventClientImpl          # 입출금 데이터 가공 구현체
 
         ┗━ configuration                    # 각종 설정들
-            ┗━ RestClientConfiguration           # RestTemplate Builder
             ┗━ QuerydslConfiguration (예정)       # Querydsl 설정파일
+            ┗━ RestClientConfiguration           # RestTemplate Builder
             ┗━ RabbitMQConfiguration             # RabbitMQ 설정파일
 
         ┗━ controller                       # service 호출 및 Endpoint 경로설정
@@ -41,7 +41,6 @@
         ┗━ event                            # 메세징, 요청, 응답 이벤트
             ┗━ EventDispatcher                  # 메세징 보내는 로직 처리
             ┗━ EventHandler                     # 메세징 받는 로직 처리
-            ┗━ RequestEvent                     # 요청 이벤트
             ┗━ ResponseDepositMinedEvent        # Deposit Mined 응답
             ┗━ ResponseWithdrawPendingEvent     # Withdraw Pending 응답
 
@@ -60,32 +59,91 @@
   ```
 <br/>
 
+## Guide-line
+
+**Enclave API 컨테이너 생성** <br>
+```
+docker run -d -e NODE_ENV=test -p 3000:3000 haechi/sdk-enclave:stable npm start
+```
+<br>
+
+**Rabbit MQ 컨테이너 생성**<br>
+(username = username, password = password)
+```
+docker run -d --name rabbitmq -p 5672:5672 -p 8080:15672 --restart=unless-stopped -e RABBITMQ_DEFAULT_USER=username -e RABBITMQ_DEFAULT_PASS=password rabbitmq:management
+```
+<br>
+
+**application.properties 설정**
+```
+# Rabbit MQ 설정
+spring.rabbitmq.username=username
+spring.rabbitmq.password=password
+
+# API 서버 Http Header Key 설정
+valueTransferEventsHost=http://localhost:3000/api/v2/eth/value-transfer-events
+xHenesisSecret=
+authorization=
+```
+
 ## Problem
-- 페이징 처리를 이용한 모든 거래내역 조회가 필요합니다.<br>
-- 1초 이내로 변하는 Mined, Reorged, Pending 은 검출 불가합니다.
-- 최근 거래 내역 조회가 필요합니다.
-- RabbitMQ 가 필요없어졌지만 원하는 정보를 다른 어플리케이션에 전송하는데 요긴할 것 같습니다.
+- Queue 의 Durable = True 했을 때 <br>
+```PRECONDITION_FAILED - inequivalent arg 'durable' for queue```
+에러 발생. <br> 
+-> 이미 durable queue 로써 존재하다는 뜻.
+
+- page 가 많을 경우 Recursive Depth 가 깊어짐에 따라
+Time complexity 가 급격하게 증가. > 알고리즘 개션 필요.
+
+- 1초 안에 Transaction 상태가 변할 경우, 혹은 target API 서버(value-transfer-events) 가 다운 되었을 경우<br>
+해당 트랜잭션의 변화를 저장할 수 없음.
 
 ## Solution
-- 스프링 부트에서 페이징 처리하는 방법 학습이 필요합니다.
+- 구체적으로 durable queue를 지정할 필요가 있다.
+- Mass Transit 을 non-durable 로 다시 생성하도록 해야함.
+
+## Impression
+ > 이제는 Java 와 Spring에 조금 익숙해 졌지만 적응하는 데 꽤 오래 걸린 것 같습니다.
+ 과제을 하면서 점점 공부할 심화 내용이 늘어가고 자료는 점점 줄었습니다.
+ 하지만 계속해서 새로운 것을 적용해보고, 혹은 기존의 것을 개선해 해결하는 과정이 너무 재밌었습니다. 
+ 에러가 나고 버그가 생길때마다 힘들었지만 그보다 더한 승부욕이 불타오르기도 했습니다.
+ 속성으로 공부했기 때문에 JVM Garbage Collection 이나 Thread, Exception, Annotation, TDD 등의 이점을 활용한 프로그래밍 하지 못한 아쉬움이 있습니다. 
+ Query DSL 이나 반응형 프로그래밍을 적용을 하지 못한, Kakao Push 알림 구현 등 다양한 외부 API와의 연동을 구현하지 못한 아쉬움도 남았습니다.
+ <br><br>
+ 또다시 배울 수 있어서 재밌었고 그로인해 더 배울게 생겨서 더 좋았습니다.
+ 정말 소중한 기회와 경험 감사드립니다.
+ 
+<br><br>
 
 
 ## Timeline
-- 10월 25일 (일)<br>
+- 10월 25일 (일)<br><br>
+**통신 메커니즘 변경(Rabbit MQ 사용)**<br>
+Monitoring Service 에서 중복되지 않는 새로운 transaction 을 감지하면<br>
+해당 Transaction 정보를 Notification controller의 각 Method로 전송합니다. <br>
+정보를 받은 Controller 는 response 하는 notification service를 return합니다.<br><br> 
+**Request 에 따른 Pagintaion 처리**<br>
+size, updatedAtGte, page, walletId 등을 param으로 받게끔 Client 수정했습니다.<br>
+URIComponents 를 사용해 해당 param을 담아서 restTemplate에 맵핑합니다.<br>
+(한 페이지에 50개의 거래내역 조회, 10분전 까지 알림 조회)<br>
 
-- 10월 24일 (토)<br>
-Pagination 처리<br><br>
+<br><br>
+
+- 10월 24일 (토)<br><br>
+**Pagination 관련 에러**<br>
 updatedAtGte 을 설정하지 않고<br>
-Recursive 로 조회 시 Stack overflow 발생 (당연히..ㅎㅎ)<br><br>
-@JsonProperty null 처리 에러 관련<br>
+Recursive 방식로 조회 시 Stack overflow 발생 (당연히..ㅎㅎ)<br><br>
+**@JsonProperty null 관련 에러**<br>
 prevUrl.equal(null)<br>
 prevUrl.isempty() 시 에러 발생 > 항상 false 이기 때문에..<br>
-prevUrl == null 로 변경<br><br>
+prevUrl == null 로 변경<br>
 
+<br><br>
 
-- 10월 23일 (금)<br>
-전체적인 구조개편<br>
-value-transfer-events 서버에서 Decimals 값이 추가됨을 확인해 DTO를 수정했습니다.<br><br>
+- 10월 23일 (금)<br><br>
+**전체적인 구조개편**<br>
+value-transfer-events 서버에서 Decimals 값 추가 확인<br>
+DTO에 Decimals field 추가했습니다.<br><br>
 상태, 타입 별로 다른 요청, 응답, 서비스 로직을 수행하므로
 Repository, Service, Event 를 세부적으로 나눴습니다.<br><br>
 모니터링 서비스와 알림응답 서비스를 나눴습니다.<br><br>
@@ -94,19 +152,19 @@ Reorganization 에 대해 공부하고 해당 로직을 구현했습니다.<br>
 구조개편과 메커니즘 변경으로 RabbitMQ가 필요없어졌습니다.<br>
 하지만 다른 어플리케이션에 데이터를 보낼 때 요긴하게 쓰일 것 같습니다.<br>
 
-<br>
+<br><br>
 
 - 10월 22일 (목)<br>
 RabbitMQ 를 활용해 각 큐별로 해당 트랜잭션 정보 보내기 성공했습니다.<br>
 하지만 중복, 또는 누락 트렌잭션을 다루는데 다른 방법이 필요해 보입니다.<br>
 
-<br>
+<br><br>
 
 - 10월 21일 (수)<br>
 Flux 예제를 구현해보았습니다.<br>
 이론적으론 이해했으나 아직 이 과제에서 구현은 힘들어보입니다. 조금 더 테스트가 필요합니다.<br> 
 
-<br>
+<br><br>
 
 - 10월 20일 (화)<br>
 Reactive Java Spring<br><br>
@@ -141,7 +199,7 @@ looselycoupled<br>
     Mono 하나의 아이디로 repo 에 검색해서 return을  받는 형식
     Flux 여러개를 연속적으로 처리하는 것.
 
-<br>
+<br><br>
 
 - 10월 19일 (월)<br>
 Async, Non-blocking 서비스 도입의 필요<br>
@@ -159,7 +217,7 @@ Async, Non-blocking 서비스 도입의 필요<br>
     그러기 위해 WebFlux 와 같은 Reactive Framework 와 <br>
     기존 도입을 계획했던 RabbitMQ 비교분석이 우선이다.
 
-<br>
+<br><br>
 
 - 10월 18일 (일)<br>
 풀타임 아르바이트로 인해 많이 작업을 하지 못했습니다.<br>
@@ -173,7 +231,7 @@ Controller의 모든 메서드가 반복실행 될 필요 없다.<br><br>
 클라이언트는 Notification Domain 에 값을 저장해야 한다.<br>
 (하나로 묶을지, 클라이언트 별로 나눌지 고민해보자)<br>
 
-<br>
+<br><br>
 
 - 10월 17일 (토)<br>
 Scheduler 를 이용해 전체 거래 내역을 1초마다 Update 한다.<br>
@@ -296,40 +354,6 @@ JAVA 기초문법 복습을 시작했습니다.<br>
     
 <br><br>
 
-## Impression
- 새로운 지식을 얻고, 새로운 분야에 도전하는 것은 두렵기도 하지만, 막상 뛰어들면 또 즐겁고 승부욕이 생긴다는 점을 다시한번 느꼈습니다. 아직 스스로 공부해야할 것이 산더미지만 스프링 부트란 프레임 워크만의 매력을 알게되었고, Type Language에 대한 공부의 필요성 또한 느꼈습니다. <br>
- 아직 적응이 필요한 문법과 구조지만 점차 눈에 익으니까 도전 정신이 더 불타올랐고, 실무에선 어떤 방식으로 설계하며 공부할까 라는 궁금증과 함께 해치랩스에서 조언과 토론을 통한 공부를 하며 꾸준한 트레이닝을 하면 정말 좋을 것 같다는 생각도 들었습니다. <br>
-
- 기초부터 순차적이고 체계적인 학습을 시도했다면 더 좋은 결과를 냈을 것이라는 아쉬움도 있지만,<br>
- 이번 기회에 어렴풋 알고 있었던 블록체인에 대해 공부해 볼 수 있었으며, 새로운 프레임워크에 대한 경험과 과거에 배웠던 JAVA 복습도 함께 할 수 있었던, 짧지만 매우 유익한 시간이었습니다. 감사합니다. <br>
-
-<br>
-
-## Sketch
-```
-
-이벤트 중심 아키텍쳐 설계 필요
-거래 상태에 따라 발생시킬 이벤트, 비즈니스 로직이 다름.
-
-기존 API 에 응답을 받아 새로운 REST API 를 구현해야하므로
-마이크로서비스에서 주로 사용하는 구조를 선택
-서비스 간 상호의존성을 최대한 낮추는 방안 모색
-> 데이터 전달 객체(DTO) 기반 모델을 단순히 복사해서 공유하는 방식 채택
-    장점 :  
-    API 소비자가 많을 때 개발 시간 절약
-    
-    단점 :  
-    API 버전 별로 DTO 를 관리해야함
-    DTO 구조를 변경하면 JSON을 역직렬화 할 수 없음.
-    > 원하는 필드만 역 직렬화 하는 방식으로 설계 필요 (일단 실패)
-
-웹서비스가 노출할 자원 식별
-식별한 자원에 대한 URI 지정
-각 자원에 수행할 수 있는 연산 식별
-식별한 연산에 대한 HTTP 메서드 맵핑
-```
-
-<br><br>
 
 ## References
     각종 Offcial Documents
@@ -337,6 +361,9 @@ JAVA 기초문법 복습을 시작했습니다.<br>
     https://www.javainuse.com/messaging/rabbitmq/
     https://docs.spring.io/spring-framework/docs/current/javadoc-api/
     https://spring.io/guides/gs/messaging-stomp-websocket/
+    
+    https://medium.com/blockvigil/how-we-deal-with-chain-reorganization-at-ethvigil-5a8c06859c7
+    https://docs.blockcollider.org/docs/forks-and-reorgs
     
     (YouTube) Spring Boot Tutorials (Telusko)
     (YouTube) [토크ON세미나] 스프링 부트를 이용한 웹 서비스 개발 (SKplanet Tacademy)
