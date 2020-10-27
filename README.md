@@ -253,8 +253,7 @@ Controller의 모든 메서드가 반복실행 될 필요 없다.<br><br>
 - 10월 17일 (토)<br>
 Scheduler 를 이용해 전체 거래 내역을 1초마다 Update 한다.<br>
 DTO의 데이터 바로 조회하는 방식으로 변경 <br>
-(DB에 저장 -> 데이터 조회 = 비효율) <br>
-Stream 병렬처리 학습 및 적용 <br>
+Stream 병렬처리 학습<br>
 
     - 모든 거래정보 (15개 최대) 를 조회합니다. <br>
     http://localhost:8080/notifications/
