@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+
 @Configuration
 public class RestClientConfiguration {
 
@@ -46,7 +48,10 @@ public class RestClientConfiguration {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
 
-        return builder.build();
+        return builder
+                .setConnectTimeout(Duration.ofMillis(500))
+                .setReadTimeout(Duration.ofMillis(500))
+                .build();
     }
 
 }
