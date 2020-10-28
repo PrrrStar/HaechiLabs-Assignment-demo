@@ -108,9 +108,11 @@ String Type 의 Encoding 문제가 아닐까 의심중<br>
 해당 트랜잭션의 변화를 저장할 수 없음.
 
 ## Solution
-- Time Complexity 문제<br>
-page 가 많을 경우 Recursive Depth 가 깊어짐에 따라<br>
-Time complexity 가 급격하게 증가. > 알고리즘 개션 필요.<br>
+- Hystrix, 서킷 브레이커를 사용해 보는 건 어떨까?<br>
+page 가 많을 경우 Recursive Depth 가 깊어짐에 따라 Time complexity 가 급격하게 증가. <br> 
+pagination 을 Dynamic programming으로 해결해보려고 했으나 도저히 감이 안와서 실패<br>
+ZIPKIN Request flow 나 성능 측정/분석에 대한 정보를 수집하는 분산 추적 기술 도입 및 <br>
+장애 연쇄
 
 - camelCase 문제 <br>
 ORM 을 바꾸거나 @Query 어노테이션을 이용
@@ -132,8 +134,15 @@ Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
  
 <br><br>
 
-
 ## Timeline
+- 10월 28일 (수)<br><br>
+**spring-cloud-sleuth**<br>
+MSA 구조에서 클라이언트의 호출이 내부적으로 여러개의 서비스를 거쳐서 일어남<br>
+따라서 전체 트랜잭션에 대한 Log tracing이 어려움<br>
+Sleuth를 통해 연관 ID(Trace, Span ID) 를 자동 생성하고 이를 Zipkin 서버로 전달한다.
+Zipkin (분산 환경 모니터링) 공부 시작<br>
+
+
 - 10월 25일 (일)<br><br>
 **통신 메커니즘 변경(Rabbit MQ 사용)**<br>
 Monitoring Service 에서 중복되지 않는 새로운 transaction 을 감지하면<br>
