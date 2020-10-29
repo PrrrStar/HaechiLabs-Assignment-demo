@@ -49,7 +49,7 @@ public class RestClientConfiguration {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
 
         return builder
-                .setConnectTimeout(Duration.ofMillis(2000))
+                .setConnectTimeout(Duration.ofMillis(500))
                 .setReadTimeout(Duration.ofMillis(2000))
                 .build();
     }
