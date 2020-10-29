@@ -35,10 +35,10 @@ public class NotificationServiceImpl implements NotificationService{
         ResponseMinedEvent response = new ResponseMinedEvent();
 
         //Transaction Hash 로 MINED 상태 조회
-        Optional<DepositMined> depositMinedTx = depositMinedRepository.findByTxHash(depositMined.getTxHash());
+        Optional<DepositMined> depositMinedTx = depositMinedRepository.getDepositMinedByTx_hash(depositMined.getTx_hash());
         if (depositMinedTx.isPresent()){
             response = new ResponseMinedEvent(
-                    depositMinedTx.get().getDepositId()
+                    depositMinedTx.get().getDeposit_id()
             );
             System.out.println("");
             System.out.println("\n======================================");

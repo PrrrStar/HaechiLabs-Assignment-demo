@@ -19,10 +19,10 @@ public class DepositReorged {
 
     //Request
     @Column(name = "deposit_id")
-    private final int depositId;
+    private final int deposit_id;
 
     @Column(name = "wallet_id")
-    private final String walletId;
+    private final String wallet_id;
 
 
     public DepositReorged() {

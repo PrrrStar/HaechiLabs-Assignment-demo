@@ -25,19 +25,19 @@ public final class DepositMined {
 
     //Request
     @Column(name = "tx_hash")
-    private final String txHash;
+    private final String tx_hash;
 
     @Column(name = "amount")
     private final String amount;
 
     @Column(name = "from_address")
-    private final String fromAddress;
+    private final String from_address;
 
     @Column(name = "to_address")
-    private final String toAddress;
+    private final String to_address;
 
     @Column(name = "wallet_id")
-    private final String walletId;
+    private final String wallet_id;
 
     @Column(name = "ticker")
     private final String ticker;
@@ -45,7 +45,7 @@ public final class DepositMined {
 
     //Response
     @Column(name = "deposit_id")
-    private final int depositId;
+    private final int deposit_id;
 
 
     public DepositMined() {

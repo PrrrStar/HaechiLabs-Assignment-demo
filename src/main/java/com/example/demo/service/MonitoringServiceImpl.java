@@ -91,7 +91,7 @@ public class MonitoringServiceImpl implements MonitoringService {
             // Deposit 에서 Transaction Status 가 MINED 인 경우,
             if (results.getStatus().contains("MINED")){
                 // id 가 존재하지 않으면 저장한다.
-                if(!depositMinedRepository.findByDepositId(eventId).isPresent()) {
+                if(depositMinedRepository.getDepositMinedByDeposit_id(eventId).isEmpty()) {
                     DepositMined request = saveDepositMinedByDepositId(results);
 
                     // 저장한 객체를 depositMined Queue 로 보낸다.
@@ -103,8 +103,8 @@ public class MonitoringServiceImpl implements MonitoringService {
             // Deposit 에서 Transaction Status 가 PENDING or REPLACED 인 경우,
             if (results.getStatus().contains("PENDING")||results.getStatus().contains("REPLACED")) {
                 // MINED 에 해당 ID 가 있고 Reorged 에는 없을 경우 저장한다.
-                if (depositMinedRepository.findByDepositId(eventId).isPresent()
-                        && !depositReorgedRepository.findByDepositId(eventId).isPresent()) {
+                if (depositMinedRepository.getDepositMinedByDeposit_id(eventId).isPresent()
+                        && depositReorgedRepository.getDepositReorgedByDeposit_id(eventId).isEmpty()) {
                     DepositReorged request = saveDepositReorgedByDepositId(results);
                     eventDispatcher.depositReorgedSend(request, "notification_exchange", "queue.depositReorged");
                 }
@@ -113,7 +113,7 @@ public class MonitoringServiceImpl implements MonitoringService {
             // Deposit Confirmed Logic
             // Deposit 에서 Transaction Status 가 CONFIRMED 인 경우,
             if (results.getStatus().contains("CONFIRMED")){
-                if(!depositConfirmedRepository.findByDepositId(eventId).isPresent()){
+                if(depositConfirmedRepository.findByDepositId(eventId).isEmpty()){
                     DepositConfirmed request = saveDepositConfirmedByDepositId(results);
                     eventDispatcher.depositConfirmedSend(request, "notification_exchange","queue.depositConfirmed");
                 }
