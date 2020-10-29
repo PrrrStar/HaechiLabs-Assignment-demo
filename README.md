@@ -87,6 +87,8 @@ authorization=
 ```
 
 ## Problem
+
+
 - @Scheduled 와 Recursive 로직이 구현된 Method 가 충돌을 일으켜 <br>
 데이터를 Tracking 할 수 없는 상황 발생<br>
 
@@ -135,12 +137,17 @@ Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
 <br><br>
 
 ## Timeline
+- 10월 29일 (목)<br><br>
+@Query 로 JSON snake_case 문제 해결
+Rest template builder 에 timeout 추가 > 재전송 문제 임시 방편 해결 
+retry 적용 필요
+
+
 - 10월 28일 (수)<br><br>
 **spring-cloud-sleuth**<br>
 MSA 구조에서 클라이언트의 호출이 내부적으로 여러개의 서비스를 거쳐서 일어남<br>
-따라서 전체 트랜잭션에 대한 Log tracing이 어려움<br>
-Sleuth를 통해 연관 ID(Trace, Span ID) 를 자동 생성하고 이를 Zipkin 서버로 전달한다.
-Zipkin (분산 환경 모니터링) 공부 시작<br>
+그결과 전체 트랜잭션에 대한 Log tracing이 어려움<br>
+Sleuth, Zipkin (분산 환경 모니터링) 공부 시작<br>
 
 
 - 10월 25일 (일)<br><br>
