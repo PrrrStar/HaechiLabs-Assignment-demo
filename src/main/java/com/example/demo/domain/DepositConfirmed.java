@@ -19,16 +19,16 @@ public class DepositConfirmed {
 
     //Request
     @Column(name = "tx_id")
-    private final String txId;
+    private final String tx_id;
 
     @Column(name = "tx_hash")
-    private final String txHash;
+    private final String tx_hash;
 
     @Column(name = "deposit_id")
-    private final int depositId;
+    private final int deposit_id;
 
     @Column(name = "wallet_id")
-    private final String walletId;
+    private final String wallet_id;
 
 
     public DepositConfirmed() {
