@@ -94,7 +94,7 @@ public class MonitoringServiceImpl implements MonitoringService {
                 if(!depositMinedRepository.findByDepositId(eventId).isPresent()) {
                     DepositMined request = saveDepositMinedByDepositId(results);
 
-                    // 저장한 값을 depositMined Queue 로 보낸다.
+                    // 저장한 객체를 depositMined Queue 로 보낸다.
                     eventDispatcher.depositMindedSend(request, "notification_exchange","queue.depositMined");
                 }
             }
