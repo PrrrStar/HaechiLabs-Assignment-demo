@@ -76,10 +76,10 @@ public class NotificationServiceImpl implements NotificationService{
     public ResponsePendingEvent retrieveWithdrawPendingTx(WithdrawPending withdrawPending) {
         ResponsePendingEvent response = new ResponsePendingEvent();
 
-        Optional<WithdrawPending> withdrawPendingTx = withdrawPendingRepository.findByTxId(withdrawPending.getTxId());
+        Optional<WithdrawPending> withdrawPendingTx = withdrawPendingRepository.getWithdrawPendingByTx_id(withdrawPending.getTx_id());
         if (withdrawPendingTx.isPresent()){
             response = new ResponsePendingEvent(
-                    withdrawPendingTx.get().getWithdrawId()
+                    withdrawPendingTx.get().getWithdraw_id()
             );
             System.out.println("\n======================================");
             System.out.println("Response Withdraw Pending");

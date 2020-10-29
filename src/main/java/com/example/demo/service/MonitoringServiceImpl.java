@@ -113,7 +113,7 @@ public class MonitoringServiceImpl implements MonitoringService {
             // Deposit Confirmed Logic
             // Deposit 에서 Transaction Status 가 CONFIRMED 인 경우,
             if (results.getStatus().contains("CONFIRMED")){
-                if(depositConfirmedRepository.findByDepositId(eventId).isEmpty()){
+                if(depositConfirmedRepository.getDepositConfirmedByDeposit_id(eventId).isEmpty()){
                     DepositConfirmed request = saveDepositConfirmedByDepositId(results);
                     eventDispatcher.depositConfirmedSend(request, "notification_exchange","queue.depositConfirmed");
                 }
@@ -127,7 +127,7 @@ public class MonitoringServiceImpl implements MonitoringService {
             // Withdraw Pending Logic
             // Withdraw 에서 Transaction Status 가 PENDING 인 경우,
             if (results.getStatus().contains("PENDING")){
-                if(!withdrawPendingRepository.findByWithdrawId(eventId).isPresent()) {
+                if(!withdrawPendingRepository.getWithdrawPendingByWithdraw_id(eventId).isPresent()) {
                     WithdrawPending request = saveWithdrawPendingByWithdrawId(results);
                     eventDispatcher.withdrawPendingSend(request, "notification_exchange","queue.withdrawPending");
                 }
@@ -136,7 +136,7 @@ public class MonitoringServiceImpl implements MonitoringService {
             // Withdraw Confirmed Logic
             // Withdraw 에서 Transaction Status 가 CONFIRMED 인 경우,
             if (results.getStatus().contains("CONFIRMED")){
-                if(!withdrawConfirmedRepository.findByWithdrawId(eventId).isPresent()) {
+                if(!withdrawConfirmedRepository.getWithdrawConfirmedByWithdraw_id(eventId).isPresent()) {
                     WithdrawConfirmed request = saveWithdrawConfirmedByWithdrawId(results);
                     eventDispatcher.withdrawConfirmedSend(request, "notification_exchange","queue.withdrawConfirmed");
                 }
