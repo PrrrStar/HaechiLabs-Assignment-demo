@@ -6,6 +6,8 @@ import com.example.demo.client.dto.TransferEventResultDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.*;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -66,6 +68,7 @@ public class TransferEventClientImpl implements TransferEventClient{
      * 서버에서 호출한 결과를 ResponseEntity<TransferEventResultDTO.Results> 타입으로 반환합니다.
      * @return ResponseEntity<TransferEventResultDTO.Results> response (ResponseEntity Type)
      */
+    @Retryable(maxAttempts =2, backoff=@Backoff(delay = 1), value= IllegalStateException.class)
     public ResponseEntity<TransferEventResultDTO> retrieveTransferResults(String url) {
 
         ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(url, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
