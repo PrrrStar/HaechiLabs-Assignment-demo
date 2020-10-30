@@ -83,7 +83,6 @@ public class MonitoringServiceImpl implements MonitoringService {
 
         int eventId = results.getId();
 
-
         // Deposit Logic
         if (results.getTransferType().contains("DEPOSIT")){
 

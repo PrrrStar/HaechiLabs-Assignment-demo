@@ -89,6 +89,7 @@ authorization=
 ## Problem
 
 
+
 - @Scheduled 와 Recursive 로직이 구현된 Method 가 충돌을 일으켜 <br>
 데이터를 Tracking 할 수 없는 상황 발생<br>
 
@@ -137,6 +138,14 @@ Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
 <br><br>
 
 ## Timeline
+- 10월 30일 (금)<br><br>
+해치랩스 면접<br>
+Spring AOP<br>
+예외 처리 <br>
+TDD 공부 <br>
+DDD 정리하기<br>
+
+
 - 10월 29일 (목)<br><br>
 @Query 로 JSON snake_case 문제 해결
 Rest template builder 에 timeout 추가 > 재전송 문제 임시 방편 해결 
