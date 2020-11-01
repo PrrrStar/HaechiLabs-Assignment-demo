@@ -138,6 +138,20 @@ Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
 <br><br>
 
 ## Timeline
+- 11월 1일 (일) <br><br>
+***도메인 모델의 기본 구성 요소*** <br>
+Entity<br>
+모델을 표현한다.<br>
+고유의 식별 값을 가진다.<br>
+모델과 관련된 비즈니스 로직을 수행한다.<br>
+자신만의 라이프 사이클을 가진다.<br>
+Value <br>
+고유의 키 값을 갖지 않음
+데이터를 표현하는 용도로 사용
+Aggregate <br>
+Repository <br>
+Service <br>
+
 - 10월 31일 (토)<br><br>
 ***도메인 주도 설계 (Domain-Driven Design)***<br>
 기술보다 도메인을 더 높은 우선순위로 둔다.<br>
