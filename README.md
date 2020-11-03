@@ -138,19 +138,32 @@ Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
 <br><br>
 
 ## Timeline
-- 11월 1일 (일) <br><br>
+
+- 11월 1일 ~ 3일 <br><br>
 ***도메인 모델의 기본 구성 요소*** <br>
-Entity<br>
+**Entity**<br>
 모델을 표현한다.<br>
 고유의 식별 값을 가진다.<br>
 모델과 관련된 비즈니스 로직을 수행한다.<br>
-자신만의 라이프 사이클을 가진다.<br>
-Value <br>
-고유의 키 값을 갖지 않음
-데이터를 표현하는 용도로 사용
-Aggregate <br>
-Repository <br>
-Service <br>
+자신만의 라이프 사이클을 가진다.<br><br>
+**Value** <br>
+고유의 키 값을 갖지 않음<br>
+데이터를 표현하는 용도로 사용<br><br>
+**Aggregate** <br>
+관련된 객체들의 묶음<br>
+데이터 변경 시 한 단위로 처리 된다. (비슷한 Life Cycle 을 갖는 객체)
+기본적으로 Aggregate 에 속한 객체는 독립이다.
+많은 도메인 모델을 간단하고 이해 가능한 수준으로 작성한다.
+Aggregate 루트를 가진다.(외부에서 접근할 수 있는 객체)<br><br>
+**Repository** <br>
+Entity 를 보관하는 장소<br>
+Aggregate 당 한 개의 Repository Interface<br>
+CRUD 기본 단위는 루트이다.<br>
+기본 인터페이스를 갖는다. (저장 - save, 검색 - list, 삭제 - delete)<br><br>
+**Service** <br>
+Entity 나 Aggregate 에 속하지 않는 도메인 기능을 도메인 서비스로 분리한다.<br>
+다른 도메인 구성 요소를 이용해서 기능을 구현한다.<br><br>
+ref. https://www.slideshare.net/madvirus/ddd-final<br>
 
 - 10월 31일 (토)<br><br>
 ***도메인 주도 설계 (Domain-Driven Design)***<br>
