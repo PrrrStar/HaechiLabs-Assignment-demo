@@ -6,6 +6,7 @@ import com.example.demo.event.ResponseMinedEvent;
 import com.example.demo.event.ResponsePendingEvent;
 import com.example.demo.repository.DepositMinedRepository;
 import com.example.demo.repository.WithdrawPendingRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class NotificationServiceImpl implements NotificationService{
 
     private WithdrawPendingRepository withdrawPendingRepository;
     private DepositMinedRepository depositMinedRepository;
+    private JPAQueryFactory query;
 
     NotificationServiceImpl(final DepositMinedRepository depositMinedRepository,
                             final WithdrawPendingRepository withdrawPendingRepository){
