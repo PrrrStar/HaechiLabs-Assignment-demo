@@ -1,4 +1,4 @@
-package com.example.demo.event;
+package com.example.demo.domain;
 
 
 import lombok.*;
@@ -11,10 +11,10 @@ import lombok.*;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ResponseMinedEvent {
+public class ResponseMined {
     private final int deposit_id;
 
-    public ResponseMinedEvent() {
+    public ResponseMined() {
         this(-1);
     }
 

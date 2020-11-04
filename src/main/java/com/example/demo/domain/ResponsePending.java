@@ -1,4 +1,4 @@
-package com.example.demo.event;
+package com.example.demo.domain;
 
 import lombok.*;
 
@@ -10,10 +10,10 @@ import lombok.*;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ResponsePendingEvent {
+public class ResponsePending {
     private final int withdraw_id;
 
-    public ResponsePendingEvent() {
+    public ResponsePending() {
         this(-1);
     }
 
