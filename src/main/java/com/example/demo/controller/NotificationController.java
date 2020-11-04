@@ -4,6 +4,7 @@ import com.example.demo.domain.*;
 import com.example.demo.event.ResponseMinedEvent;
 import com.example.demo.event.ResponsePendingEvent;
 import com.example.demo.service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 알림 어플리케이션의 컨트롤러입니다.
  */
+@Slf4j
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
@@ -46,11 +48,15 @@ public class NotificationController {
      * 1초마다 value-transfer-event api 서버를 Hooking 한 후 모니터링 서비스를 실행합니다.
      */
     @GetMapping("/")
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1000, initialDelay = 2000)
     public void getTransactionInfo() {
 
         Long start_time = System.currentTimeMillis();
-        monitoringService.retrieveTransactionInfo(valueTransferEventsHost, size, page, status, walletId, masterWalletId, updatedAtGte);
+        try{
+            monitoringService.retrieveTransactionInfo(valueTransferEventsHost, size, page, status, walletId, masterWalletId, updatedAtGte);
+        } catch(Exception e){
+            log.error(String.valueOf(e));
+        }
         Long end_time = System.currentTimeMillis();
 
         System.out.println("No. "+idx+", Run-Time : "+(end_time-start_time)+"ms");
