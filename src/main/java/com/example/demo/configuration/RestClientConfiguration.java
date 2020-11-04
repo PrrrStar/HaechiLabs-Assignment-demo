@@ -56,7 +56,7 @@ public class RestClientConfiguration {
                 .build();
 
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setReadTimeout(2000);
+        factory.setReadTimeout(3000);
         factory.setConnectTimeout(500);
 
         factory.setHttpClient(httpClient);
