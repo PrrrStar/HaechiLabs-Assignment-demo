@@ -138,6 +138,15 @@ Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
 <br><br>
 
 ## Timeline
+- 11월 4일 <br><br>
+***Domain Driven Design 구조 개편 전 시스템 개선***<br>
+**성능 5배 향상**<br>
+@Async, @Scheduled 를 Customizing 해서 0.3초마다 조회 성공<br>
+**QueryDSL 적용**<br>
+Repository 를 개선할 수 있게 됌<br>
+도메인, 서비스 개편 필요<br>
+
+
 
 - 11월 1일 ~ 3일 <br><br>
 ***도메인 모델의 기본 구성 요소*** <br>
