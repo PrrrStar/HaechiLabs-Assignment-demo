@@ -56,8 +56,8 @@ public class TransferEventClientImpl implements TransferEventClient{
                 .queryParam("walletId",walletId)
                 .queryParam("masterWalletId",masterWalletId)
                 .queryParam("updatedAtGte",updatedAtGte)
-
                 .build(false);         //인코딩 False
+
         ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
         return response;
     }
@@ -73,6 +73,7 @@ public class TransferEventClientImpl implements TransferEventClient{
 
         ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(url, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
         return response;
+
     }
 
 

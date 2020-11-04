@@ -1,5 +1,7 @@
 package com.example.demo.configuration;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
@@ -42,16 +45,24 @@ public class RestClientConfiguration {
 
     /**
      * restTemplate 을 빌드합니다.
-     * @param builder
      * @return builder.build()
      */
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    public RestTemplate restTemplate() {
 
-        return builder
-                .setConnectTimeout(Duration.ofMillis(500))
-                .setReadTimeout(Duration.ofMillis(2000))
+        HttpClient httpClient = HttpClientBuilder.create()
+                .setMaxConnTotal(150)
+                .setMaxConnPerRoute(50)
                 .build();
+
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        factory.setReadTimeout(2000);
+        factory.setConnectTimeout(500);
+
+        factory.setHttpClient(httpClient);
+        RestTemplate restTemplate = new RestTemplate(factory);
+
+        return restTemplate;
     }
 
 }
