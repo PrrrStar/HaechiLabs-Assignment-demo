@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +18,7 @@ public interface DepositReorgedRepository extends JpaRepository<DepositReorged, 
      * @param deposit_id
      * @return
      */
+    @Transactional
     @Query("SELECT dr from DepositReorged dr where dr.deposit_id = :deposit_id")
     Optional<DepositReorged> getDepositReorgedByDeposit_id(@Param("deposit_id") final int deposit_id);
 

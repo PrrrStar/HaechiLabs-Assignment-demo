@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
@@ -16,6 +17,7 @@ public interface WithdrawConfirmedRepository extends JpaRepository<WithdrawConfi
      * @param withdraw_id
      * @return
      */
+    @Transactional
     @Query("SELECT wc from WithdrawConfirmed wc where wc.withdraw_id = :withdraw_id")
     Optional<WithdrawConfirmed> getWithdrawConfirmedByWithdraw_id(@Param("withdraw_id") final int withdraw_id);
 

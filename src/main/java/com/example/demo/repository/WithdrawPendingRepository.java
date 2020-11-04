@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +18,7 @@ public interface WithdrawPendingRepository extends JpaRepository<WithdrawPending
      * @param tx_id
      * @return
      */
+    @Transactional
     @Query("SELECT wp from WithdrawPending wp where wp.tx_id = :tx_id")
     Optional<WithdrawPending> getWithdrawPendingByTx_id(@Param("tx_id") final String tx_id);
 
@@ -25,6 +27,7 @@ public interface WithdrawPendingRepository extends JpaRepository<WithdrawPending
      * @param withdraw_id
      * @return
      */
+    @Transactional
     @Query("SELECT wp from WithdrawPending wp where wp.withdraw_id = :withdraw_id")
     Optional<WithdrawPending> getWithdrawPendingByWithdraw_id(@Param("withdraw_id") final int withdraw_id);
 

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
@@ -18,6 +19,7 @@ public interface DepositMinedRepository extends JpaRepository<DepositMined, Long
      * @param tx_hash
      * @return
      */
+    @Transactional
     @Query("SELECT dm from DepositMined dm where dm.tx_hash = :tx_hash")
     Optional<DepositMined> getDepositMinedByTx_hash(@Param("tx_hash") final String tx_hash);
 
@@ -26,6 +28,7 @@ public interface DepositMinedRepository extends JpaRepository<DepositMined, Long
      * @param deposit_id
      * @return
      */
+    @Transactional
     @Query("SELECT dm from DepositMined dm where dm.deposit_id = :deposit_id")
     Optional<DepositMined> getDepositMinedByDeposit_id(@Param("deposit_id") final int deposit_id);
 
