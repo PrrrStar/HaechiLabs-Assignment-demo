@@ -11,7 +11,7 @@ public class SchedulerConfiguration {
     public TaskScheduler poolScheduler(){
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors()*2);
-        threadPoolTaskScheduler.setThreadNamePrefix("monitoring-threadpool");
+        threadPoolTaskScheduler.setThreadNamePrefix("monitoring-threadPool");
         return threadPoolTaskScheduler;
     }
 }

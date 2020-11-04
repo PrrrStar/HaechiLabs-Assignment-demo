@@ -2,8 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.domain.*;
 
-import com.example.demo.event.ResponseMinedEvent;
-import com.example.demo.event.ResponsePendingEvent;
+import com.example.demo.domain.ResponseMined;
+import com.example.demo.domain.ResponsePending;
 import com.example.demo.repository.DepositMinedRepository;
 import com.example.demo.repository.WithdrawPendingRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -35,13 +35,13 @@ public class NotificationServiceImpl implements NotificationService{
      * @return deposit Id
      */
     @Override
-    public ResponseMinedEvent retrieveDepositMinedTx(DepositMined depositMined) {
-        ResponseMinedEvent response = new ResponseMinedEvent();
+    public ResponseMined retrieveDepositMinedTx(DepositMined depositMined) {
+        ResponseMined response = new ResponseMined();
 
         //Transaction Hash 로 MINED 상태 조회
         Optional<DepositMined> depositMinedTx = depositMinedRepository.getDepositMinedByTx_hash(depositMined.getTx_hash());
         if (depositMinedTx.isPresent()){
-            response = new ResponseMinedEvent(
+            response = new ResponseMined(
                     depositMinedTx.get().getDeposit_id()
             );
             System.out.println("");
@@ -77,12 +77,12 @@ public class NotificationServiceImpl implements NotificationService{
      * @return withdraw Id
      */
     @Override
-    public ResponsePendingEvent retrieveWithdrawPendingTx(WithdrawPending withdrawPending) {
-        ResponsePendingEvent response = new ResponsePendingEvent();
+    public ResponsePending retrieveWithdrawPendingTx(WithdrawPending withdrawPending) {
+        ResponsePending response = new ResponsePending();
 
         Optional<WithdrawPending> withdrawPendingTx = withdrawPendingRepository.getWithdrawPendingByTx_id(withdrawPending.getTx_id());
         if (withdrawPendingTx.isPresent()){
-            response = new ResponsePendingEvent(
+            response = new ResponsePending(
                     withdrawPendingTx.get().getWithdraw_id()
             );
             System.out.println("\n======================================");

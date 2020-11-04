@@ -1,11 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.*;
-import com.example.demo.event.ResponseMinedEvent;
-import com.example.demo.event.ResponsePendingEvent;
+import com.example.demo.domain.ResponseMined;
+import com.example.demo.domain.ResponsePending;
 import com.example.demo.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +49,8 @@ public class NotificationController {
      * 1초마다 value-transfer-event api 서버를 Hooking 한 후 모니터링 서비스를 실행합니다.
      */
     @GetMapping("/")
-    @Scheduled(fixedDelay = 1000, initialDelay = 2000)
+    @Async
+    @Scheduled(fixedRate = 500, initialDelay = 2000)
     public void getTransactionInfo() {
 
         Long start_time = System.currentTimeMillis();
@@ -66,7 +68,7 @@ public class NotificationController {
 
 
     @PostMapping("/deposit_mined")
-    public ResponseMinedEvent postDepositMinedTx(@RequestBody DepositMined depositMined){
+    public ResponseMined postDepositMinedTx(@RequestBody DepositMined depositMined){
         return notificationService.retrieveDepositMinedTx(depositMined);
     }
     @PostMapping("/deposit_reorged")
@@ -78,7 +80,7 @@ public class NotificationController {
         notificationService.retrieveDepositConfirmedTx(depositConfirmed);
     }
     @PostMapping("/withdraw_pending")
-    public ResponsePendingEvent postWithdrawPendingTx(@RequestBody WithdrawPending withdrawPending){
+    public ResponsePending postWithdrawPendingTx(@RequestBody WithdrawPending withdrawPending){
         return notificationService.retrieveWithdrawPendingTx(withdrawPending);
     }
     @PostMapping("/withdraw_confirmed")

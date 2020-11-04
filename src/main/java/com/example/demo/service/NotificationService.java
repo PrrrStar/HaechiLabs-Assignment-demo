@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.*;
-import com.example.demo.event.ResponseMinedEvent;
-import com.example.demo.event.ResponsePendingEvent;
+import com.example.demo.domain.ResponseMined;
+import com.example.demo.domain.ResponsePending;
 
 
 public interface NotificationService {
@@ -13,10 +13,10 @@ public interface NotificationService {
      * @param depositMined  EventHandler 에서 받은, 혹은 json request 로 들어온 정보를 받습니다.
      * @return
      */
-    ResponseMinedEvent retrieveDepositMinedTx(DepositMined depositMined);
+    ResponseMined retrieveDepositMinedTx(DepositMined depositMined);
     void retrieveDepositReorgedTx(DepositReorged requestEvent);
     void retrieveDepositConfirmedTx(DepositConfirmed requestEvent);
-    ResponsePendingEvent retrieveWithdrawPendingTx(WithdrawPending requestEvent);
+    ResponsePending retrieveWithdrawPendingTx(WithdrawPending requestEvent);
     void retrieveWithdrawConfirmedTx(WithdrawConfirmed requestEvent);
 
 }
