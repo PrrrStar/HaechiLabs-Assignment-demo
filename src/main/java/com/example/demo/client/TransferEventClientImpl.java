@@ -68,7 +68,6 @@ public class TransferEventClientImpl implements TransferEventClient{
      * 서버에서 호출한 결과를 ResponseEntity<TransferEventResultDTO.Results> 타입으로 반환합니다.
      * @return ResponseEntity<TransferEventResultDTO.Results> response (ResponseEntity Type)
      */
-    @Retryable(maxAttempts =2, backoff=@Backoff(delay = 1), value= IllegalStateException.class)
     public ResponseEntity<TransferEventResultDTO> retrieveTransferResults(String url) {
 
         ResponseEntity<TransferEventResultDTO> response = restTemplate.exchange(url, HttpMethod.GET, createHttpHeaders, TransferEventResultDTO.class);
