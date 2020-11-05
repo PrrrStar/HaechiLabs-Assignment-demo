@@ -6,7 +6,7 @@
 > Framework     : Spring Boot 2.3.4.RELEASED <br/>
 > BuildTool     : Maven<br/>
 > Messaging     : RabbitMQ<br/>
-> ORM           : JpaRepository<br/>
+> ORM           : JpaRepository, QueryDSL<br/>
 > IDE           : IntelliJ<br/>
 > OS            : Window 10<br/>
 
@@ -35,14 +35,14 @@
             ┗━ DomainConfirmed                   # 알림관련 Entity 입니다.
             ┗━ DomainMined
             ┗━ DomainReorged
+            ┗━ ResponseMined
+            ┗━ ResponseConfirmed
             ┗━ WithdrawConfirmed
             ┗━ WithdrawPending
 
         ┗━ event                            # 메세징, 요청, 응답 이벤트
             ┗━ EventDispatcher                  # 메세징 보내는 로직 처리
             ┗━ EventHandler                     # 메세징 받는 로직 처리
-            ┗━ ResponseDepositMinedEvent        # Deposit Mined 응답
-            ┗━ ResponseWithdrawPendingEvent     # Withdraw Pending 응답
 
         ┗━ repository                       # JPA Repository 입니다.
             ┗━ DepositConfirmedRepository       # Id 로 조회합니다.
@@ -52,10 +52,18 @@
             ┗━ WithdrawPendingRepository        # Id, Transaction Id 로 조회할 수 있습니다.
 
         ┗━ service                          # 비즈니스 로직 처리
-            ┗━MonitoringService                 # 모니터링서비스 인터페이스
-            ┗━MonitoringServiceImpl             # 모니터링 서비스 로직 구현체
-            ┗━NotificationService               # 알림서비스 인터페이스
-            ┗━NotificationServiceImpl           # 알림서비스 비즈니스 로직을 처리할 구현체
+            ┗━ MonitoringService                 # 모니터링서비스 인터페이스
+            ┗━ MonitoringServiceImpl             # 모니터링 서비스 로직 구현체
+            ┗━ NotificationService               # 알림서비스 인터페이스
+            ┗━ NotificationServiceImpl           # 알림서비스 비즈니스 로직을 처리할 구현체
+  ┗━ target
+    ┗━ classes
+    ┗━ generated-sources
+        ┗━ annotations
+        ┗━ java
+            ┗━ com.example.demo.domain
+    ┗━ generated-test-sources
+    ┗━ test-classes
   ```
 <br/>
 
