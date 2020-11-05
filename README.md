@@ -87,53 +87,28 @@ authorization=
 ```
 
 ## Problem
+- 패키지 구성이 논리적으로 나뉘어있지 않음
+- 에러 발생 시 예외 처리하지 않음
+- 테스트 코드가 없음. 매번 서비스를 Restart 해서 Log 분석.
+- 무분별한 인터페이스 사용
+- 0.3초 안에 Transaction 상태가 여러번 변할 경우 탐지 불가<br>
+모든 트렌잭션의 변화를 빠르고 정확하게 탐지해야함<br>
+Rest Template Exchange 의 시간이 가장 오래걸림<br>
+(Exchange = 평균 450ms, Recursive = 평균 2ms)<br>
 
+- Recursive 깊이가 깊어지면(Depth = 8) Exchange 시간 2배로 증가 (size 와 무관)
 
-
-- @Scheduled 와 Recursive 로직이 구현된 Method 가 충돌을 일으켜 <br>
-데이터를 Tracking 할 수 없는 상황 발생<br>
-
-- JPA 에서 snake_case 는 인식하지 못함. <br>
-그로 인해 JSON 의 Key 값이 camelCase 로 구성됨.<br>
-ex) findByTx_id => 언더바(_)를 인식하지 못함.<br>
- 
 - URIComponents 에서 masterWalletId나 walletId 맵핑한 URI 로 <br>
 조건을 만족하는 데이터를 가져오지 못함.<br>
-String Type 의 Encoding 문제가 아닐까 의심중<br>
-
-- Queue 의 Durable = True 했을 때 <br>
-```PRECONDITION_FAILED - inequivalent arg 'durable' for queue```
-에러 발생. <br> 
--> 이미 durable queue 로써 존재하다는 뜻.
-
-- 1초 안에 Transaction 상태가 여러번 변할 경우,<br>
-혹은 target API 서버(value-transfer-events) 가 다운 되었을 경우<br>
-해당 트랜잭션의 변화를 저장할 수 없음.
 
 ## Solution
-- Hystrix, 서킷 브레이커를 사용해 보는 건 어떨까?<br>
-page 가 많을 경우 Recursive Depth 가 깊어짐에 따라 Time complexity 가 급격하게 증가. <br> 
-pagination 을 Dynamic programming으로 해결해보려고 했으나 도저히 감이 안와서 실패<br>
-ZIPKIN Request flow 나 성능 측정/분석에 대한 정보를 수집하는 분산 추적 기술 도입 및 <br>
-장애 연쇄
+- Domain Driven Development 에 맞게 구조 개편 필요
+- 에외 처리할 부분들 면밀히 검토 후 설정 필요
+- 테스트 코드 작성 필요
+- Interface 의 다형성을 살려 재작성 필요
+- Hystrix, 서킷 브레이커?, API Gateway?<br>
+- ZIPKIN Request flow 나 성능 측정/분석에 대한 정보를 수집하는 분산 추적 기술 도입 예정<br>
 
-- camelCase 문제 <br>
-ORM 을 바꾸거나 @Query 어노테이션을 이용
-
-- Queue Durable 문제 <br>
-구체적으로 durable queue를 지정할 필요가 있다.<br>
-Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
- 
-## Impression
- > 이제는 Java 와 Spring에 조금 익숙해 졌지만 적응하는 데 꽤 오래 걸린 것 같습니다.
- 과제을 하면서 점점 공부할 심화 내용이 늘어가고 자료는 점점 줄었습니다.
- 하지만 계속해서 새로운 것을 적용해보고, 혹은 기존의 것을 개선해 해결하는 과정이 너무 재밌었습니다. 
- 에러가 나고 버그가 생길때마다 힘들었지만 그보다 더한 승부욕이 불타오르기도 했습니다.
- 속성으로 공부했기 때문에 JVM Garbage Collection 이나 Thread, Exception, Annotation, TDD 등의 이점을 활용한 프로그래밍 하지 못한 아쉬움이 있습니다. 
- Query DSL 이나 반응형 프로그래밍을 적용을 하지 못한, Kakao Push 알림 구현 등 다양한 외부 API와의 연동을 구현하지 못한 아쉬움도 남았습니다.
- <br><br>
- 또다시 배울 수 있어서 재밌었고 그로인해 더 배울게 생겨서 더 좋았습니다.
- 정말 소중한 기회와 경험 감사드립니다.
  
 <br><br>
 
@@ -141,7 +116,7 @@ Mass Transit 을 non-durable 로 다시 생성하도록 해야함.<br>
 - 11월 4일 <br><br>
 ***Domain Driven Design 구조 개편 전 시스템 개선***<br>
 **성능 5배 향상**<br>
-@Async, @Scheduled 를 Customizing 해서 0.3초마다 조회 성공<br>
+@Async, @Scheduled 를 Customizing 해서 0.3초마다 조회 성공<br><br>
 **QueryDSL 적용**<br>
 Repository 를 개선할 수 있게 됌<br>
 도메인, 서비스 개편 필요<br>
@@ -178,37 +153,38 @@ ref. https://www.slideshare.net/madvirus/ddd-final<br>
 ***도메인 주도 설계 (Domain-Driven Design)***<br>
 기술보다 도메인을 더 높은 우선순위로 둔다.<br>
 어떤 문제를 해결하기 위해 항상 도메인을 먼저 고려한다.<br><br>
-
 ***도메인과 객체의 차이***<br>
 객체 : 추상화 또는 구체화할 수 있는 특정 요소만을 표현함.<br>
 도메인 : 사용자가 사용하는 모든 것을 설명<br>
-
-```
-ex) 지민이가 기타를 친다.
-객체 - 지민이, 기타
-객체 행위- 친다.
-
-도메인 - 지민이,기타, 친다,지민이가 기타를 진차.
-```
 도메인은 사용자가 누구인가에 따라, 어떻게 사용하느냐에 따라 형태가 가변적이다.<br>
 소프트웨어에서 도메인은 시간이 흐름과 동시에 지속적으로 변경된다.<br>
 사용자의 관점 또한 같이 변한다.<br>
+    ```
+    ex) 지민이가 기타를 친다.
+    객체 - 지민이, 기타
+    객체 행위- 친다.
+    
+    도메인 - 지민이,기타, 친다,지민이가 기타를 진차.
+    ```
 
 
+<br>
 
 - 10월 30일 (금)<br><br>
-해치랩스 면접<br>
+**해치랩스 면접**<br>
 Spring AOP<br>
 예외 처리 <br>
 TDD 공부 <br>
 DDD 정리하기<br>
 
+<br><br>
 
 - 10월 29일 (목)<br><br>
 @Query 로 JSON snake_case 문제 해결
 Rest template builder 에 timeout 추가 > 재전송 문제 임시 방편 해결 
 retry 적용 필요
 
+<br><br>
 
 - 10월 28일 (수)<br><br>
 **spring-cloud-sleuth**<br>
@@ -216,6 +192,7 @@ MSA 구조에서 클라이언트의 호출이 내부적으로 여러개의 서�
 그결과 전체 트랜잭션에 대한 Log tracing이 어려움<br>
 Sleuth, Zipkin (분산 환경 모니터링) 공부 시작<br>
 
+<br><br>
 
 - 10월 25일 (일)<br><br>
 **통신 메커니즘 변경(Rabbit MQ 사용)**<br>
@@ -454,6 +431,18 @@ JAVA 기초문법 복습을 시작했습니다.<br>
 <br><br>
 
 
+## Impression
+ > 이제는 Java 와 Spring에 조금 익숙해 졌지만 적응하는 데 꽤 오래 걸린 것 같습니다.
+ 과제을 하면서 점점 공부할 심화 내용이 늘어가고 자료는 점점 줄었습니다.
+ 하지만 계속해서 새로운 것을 적용해보고, 혹은 기존의 것을 개선해 해결하는 과정이 너무 재밌었습니다. 
+ 에러가 나고 버그가 생길때마다 힘들었지만 그보다 더한 승부욕이 불타오르기도 했습니다.
+ 속성으로 공부했기 때문에 JVM Garbage Collection 이나 Thread, Exception, Annotation, TDD 등의 이점을 활용한 프로그래밍 하지 못한 아쉬움이 있습니다. 
+ Query DSL 이나 반응형 프로그래밍을 적용을 하지 못한, Kakao Push 알림 구현 등 다양한 외부 API와의 연동을 구현하지 못한 아쉬움도 남았습니다.
+ <br><br>
+ 또다시 배울 수 있어서 재밌었고 그로인해 더 배울게 생겨서 더 좋았습니다.
+ 정말 소중한 기회와 경험 감사드립니다.
+
+<br><br>
 ## References
     각종 Offcial Documents
     https://shortstories.gitbooks.io/studybook/content/message_queue_c815_b9ac/rabbitmq-c0bd-c9c8.html

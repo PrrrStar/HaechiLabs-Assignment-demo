@@ -53,12 +53,9 @@ public class MonitoringServiceImpl implements MonitoringService {
                                                                         String walletId,
                                                                         String masterWalletId,
                                                                         String updatedAtGte){
-        Long start_time = System.currentTimeMillis();
 
+        // 이부분 시간을 줄일 필요가 있다.
         ResponseEntity<TransferEventResultDTO> transferResults = transferEventClient.detectTransferEvent(url, size, Long.toString(page), status, walletId, masterWalletId, updatedAtGte);
-
-        Long end_time = System.currentTimeMillis();
-        System.out.println("Tx detector Run-Time : "+(end_time-start_time)+"ms");
 
         String nextURL = transferResults.getBody().getPagination().getNextUrl();
         List<TransferEventResultDTO.Results> results = transferResults.getBody().getResults();
@@ -66,8 +63,6 @@ public class MonitoringServiceImpl implements MonitoringService {
 
         // txDetector 는 각 Transaction status, transfer type 을 감지하고 Entity 에 save 한다.
         results.forEach(this::txDetector);
-
-
 
         // 다음 페이지가 없으면 Recursive 탈출
         if (nextURL == null){

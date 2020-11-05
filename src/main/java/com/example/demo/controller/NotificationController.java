@@ -36,7 +36,7 @@ public class NotificationController {
     /**
      * 정보를 Tracking 할 때 필요한 Request URL Components 입니다. Client 에서 위 값들을 build 해줍니다.
      */
-    private final String size = "50";
+    private final String size = "100";
     private final int page = 0;
     private final String status = "";
     private final String walletId = "";
@@ -48,9 +48,8 @@ public class NotificationController {
     /**
      * 1초마다 value-transfer-event api 서버를 Hooking 한 후 모니터링 서비스를 실행합니다.
      */
-    @GetMapping("/")
     @Async
-    @Scheduled(fixedRate = 500, initialDelay = 2000)
+    @Scheduled(fixedRate = 300, initialDelay = 2000)
     public void getTransactionInfo() {
 
         Long start_time = System.currentTimeMillis();
@@ -61,11 +60,9 @@ public class NotificationController {
         }
         Long end_time = System.currentTimeMillis();
 
-        System.out.println("No. "+idx+", Run-Time : "+(end_time-start_time)+"ms");
+        log.info("No."+idx+"\tRun-Time : "+(end_time-start_time)+"ms");
         idx++;
     }
-
-
 
     @PostMapping("/deposit_mined")
     public ResponseMined postDepositMinedTx(@RequestBody DepositMined depositMined){
