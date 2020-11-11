@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.web;
 
 import com.example.demo.domain.*;
 import com.example.demo.domain.ResponseMined;
