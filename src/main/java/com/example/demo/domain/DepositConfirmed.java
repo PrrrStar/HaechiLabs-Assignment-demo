@@ -19,7 +19,7 @@ public class DepositConfirmed {
 
     //Request
     @Column(name = "tx_id")
-    private final String tx_id;
+    private String tx_id;
 
     @Column(name = "tx_hash")
     private final String tx_hash;
